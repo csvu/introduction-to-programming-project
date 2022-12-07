@@ -2,9 +2,11 @@ import pygame, time, random
 
 pygame.init()
 
-screen = pygame.display.set_mode((450, 750))
-font = pygame.font.SysFont("Calibri", 20, True)
-text = font.render("AAA", True, (255, 255, 255))
+screen = pygame.display.set_mode((500,500))
+win = pygame.display.set_mode((339, 333))
+
+font = pygame.font.SysFont("Times New Roman", 20, True)
+text = font.render("AAABBBCCC", True, (255, 255, 255))
 screen.fill((0, 0, 0))
 screen.blit(text, (0, 0))
 
