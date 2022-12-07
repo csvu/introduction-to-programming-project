@@ -2,7 +2,7 @@ import pygame, time, random
 
 pygame.init()
 
-screen = pygame.display.set_mode((500,500))
+screen = pygame.display.set_mode((500, cd50))
 win = pygame.display.set_mode((339, 333))
 
 font = pygame.font.SysFont("Times New Roman", 20, True)
