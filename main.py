@@ -1,4 +1,4 @@
-import pygame, time
+import pygame, time, random
 
 pygame.init()
 
@@ -12,7 +12,6 @@ screen.blit(text, (0, 0))
 
 running = True
 while running:
-    #print("x")
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
