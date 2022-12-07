@@ -3,6 +3,8 @@ import pygame, time
 pygame.init()
 
 screen = pygame.display.set_mode((500,500))
+win = pygame.display.set_mode((339, 333))
+
 font = pygame.font.SysFont("Times New Roman", 20, True)
 text = font.render("AAABBBCCC", True, (255, 255, 255))
 screen.fill((0, 0, 0))
