@@ -10,7 +10,7 @@ text = font.render("AAABBBCCC", True, (255, 255, 255))
 screen.fill((0, 0, 0))
 screen.blit(text, (0, 0))
 
-
+    #rbvtwlrbvgebvt
 
 running = True
 while running:
