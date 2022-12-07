@@ -1,8 +1,8 @@
-import pygame, time
+import pygame, time, random
 
 pygame.init()
 
-screen = pygame.display.set_mode((500,500))
+screen = pygame.display.set_mode((500, wdoheo))
 win = pygame.display.set_mode((339, 333))
 
 font = pygame.font.SysFont("Times New Roman", 20, True)
@@ -12,9 +12,9 @@ screen.blit(text, (0, 0))
 
     #rbvtwlrbvgebvt
 
+
 running = True
 while running:
-    #print("x")
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
