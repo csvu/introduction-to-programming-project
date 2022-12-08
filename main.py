@@ -5,15 +5,6 @@ pygame.init()
 width = 500
 height = 750
 
-screen = pygame.display.set_mode((width, height))
-
-# ========== Title and Icon ==========
-pygame.display.set_caption('Typing game')
-icon = pygame.image.load('image/spaceship.png')
-pygame.display.set_icon(icon)
-screen = pygame.display.set_mode((width, height))
-win = pygame.display.set_mode((400, 700))
-
 #RGB color values
 black  = (  0,   0,   0)
 gray   = (127, 127, 127)
@@ -24,6 +15,14 @@ blue   = (  0,   0, 255)
 yellow = (255, 255,   0)
 cyan   = (  0, 255, 255)
 
+screen = pygame.display.set_mode((width, height))
+
+# ========== Title and Icon ==========
+pygame.display.set_caption('Typing game')
+icon = pygame.image.load('image/spaceship.png')
+pygame.display.set_icon(icon)
+screen = pygame.display.set_mode((width, height))
+win = pygame.display.set_mode((400, 700))
 
 font = pygame.font.SysFont("Times New Roman", 20, True)
 text = font.render("AAABBBCCC", True, white)
