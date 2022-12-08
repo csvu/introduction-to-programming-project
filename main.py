@@ -26,7 +26,7 @@ win = pygame.display.set_mode((400, 700))
 
 font = pygame.font.SysFont("Times New Roman", 20, True)
 text = font.render("AAABBBCCC", True, white)
-screen.fill((0, 0, 0))
+screen.fill(black)
 screen.blit(text, (0, 0))
 
 
@@ -89,7 +89,7 @@ while running:
         bullet (playerX, bulletY)
         bulletY -= bulletY_change
 
-    if bulletY <= 0:
+    if bulletY <= -150:
         bulletY = 500
         bullet_state = "ready"
 
