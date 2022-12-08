@@ -11,10 +11,22 @@ screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption('Typing game')
 icon = pygame.image.load('image/spaceship.png')
 pygame.display.set_icon(icon)
+screen = pygame.display.set_mode((width, height))
+win = pygame.display.set_mode((400, 700))
+
+#RGB color values
+black  = (  0,   0,   0)
+gray   = (127, 127, 127)
+white  = (255, 255, 255)
+red    = (255,   0,   0)
+green  = (  0, 255,   0)
+blue   = (  0,   0, 255)
+yellow = (255, 255,   0)
+cyan   = (  0, 255, 255)
 
 
 font = pygame.font.SysFont("Times New Roman", 20, True)
-text = font.render("AAABBBCCC", True, (255, 255, 255))
+text = font.render("AAABBBCCC", True, white)
 screen.fill((0, 0, 0))
 screen.blit(text, (0, 0))
 
@@ -26,7 +38,7 @@ bg = pygame.transform.scale (background_img, (500, 750))
 # ========== Player ==========
 player_img = pygame.image.load('image/player_icon.png')
 player_icon = pygame.transform.scale (player_img, (50, 50))
-playerX = 220
+playerX = 180
 playerY = 600
 
 def player (x, y):
@@ -59,11 +71,13 @@ def bullet (x, y):
     screen.blit (bullet_icon, (x + 10, y + 100))
 
 
+
 running = True
 while running:
     #print("x")
     screen.blit(bg, (0, 0))
 
+    #print("x")git
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
