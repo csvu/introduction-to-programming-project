@@ -25,8 +25,8 @@ screen = pygame.display.set_mode((width, height))
 win = pygame.display.set_mode((400, 700))
 
 font = pygame.font.SysFont("Times New Roman", 20, True)
-text = font.render("AAABBBCCC", True, white)
-screen.fill((0, 0, 0))
+text = font.render("AAA", True, white)
+screen.fill(black)
 screen.blit(text, (0, 0))
 
 
