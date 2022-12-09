@@ -2,18 +2,6 @@ import pygame, time, random
 
 pygame.init()
 
-<<<<<<< HEAD
-screen = pygame.display.set_mode((339, 333))
-
-font = pygame.font.SysFont("Times New Roman", 20, True)
-
-
-text = font.render("AAABBBCCC", True, (111, 222, 111))
-screen.fill((0, 0, 0))
-x = 0
-y = 0
-screen.blit(text, (x, y))
-=======
 width = 500
 height = 750
 
@@ -38,9 +26,8 @@ win = pygame.display.set_mode((400, 700))
 
 font = pygame.font.SysFont("Times New Roman", 20, True)
 text = font.render("AAABBBCCC", True, white)
-screen.fill(black)
+screen.fill((0, 0, 0))
 screen.blit(text, (0, 0))
->>>>>>> 9989228bb585383d7c58ce0bdb16d5d2175e2c24
 
 
 # Set Background Image When the game started
@@ -95,12 +82,6 @@ while running:
             pygame.quit()
             quit()
         if event.type == pygame.KEYDOWN:
-<<<<<<< HEAD
-            if event.key == pygame.K_d:
-                x += 10
-                screen.fill((0, 0, 0))
-                screen.blit(text, (x, y))
-=======
                 bullet (playerX, bulletY)
     
 
@@ -108,15 +89,12 @@ while running:
         bullet (playerX, bulletY)
         bulletY -= bulletY_change
 
-    if bulletY <= -150:
+    if bulletY <= 0:
         bulletY = 500
         bullet_state = "ready"
 
     player (playerX, playerY)
     enemy (enemyX, enemyY)
 
->>>>>>> 9989228bb585383d7c58ce0bdb16d5d2175e2c24
     pygame.display.update()
-
-    
         
