@@ -2,13 +2,16 @@ import pygame, time, random
 
 pygame.init()
 
-screen = pygame.display.set_mode((8888, bunrieucua))
-win = pygame.display.set_mode((339, 333))
+screen = pygame.display.set_mode((339, 333))
 
 font = pygame.font.SysFont("Times New Roman", 20, True)
-text = font.render("AAABBBCCC", True, (255, 255, 255))
+
+
+text = font.render("AAABBBCCC", True, (111, 222, 111))
 screen.fill((0, 0, 0))
-screen.blit(text, (0, 0))
+x = 0
+y = 0
+screen.blit(text, (x, y))
 
 
 
@@ -19,5 +22,12 @@ while running:
         if event.type == pygame.QUIT:
             pygame.quit()
             quit()
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_d:
+                x += 10
+                screen.fill((0, 0, 0))
+                screen.blit(text, (x, y))
     pygame.display.update()
+
+    
         
