@@ -19,7 +19,7 @@ screen = pygame.display.set_mode((width, height))
 
 # ========== Title and Icon ==========
 pygame.display.set_caption('Typing game')
-icon = pygame.image.load('image/spaceship.png')
+icon = pygame.image.load('image/bullets2.png')
 pygame.display.set_icon(icon)
 screen = pygame.display.set_mode((width, height))
 win = pygame.display.set_mode((400, 700))
@@ -56,7 +56,7 @@ def enemy (x, y):
 
 # ========== Bullet ===========
 
-bullet_img = pygame.image.load('image/bullets.png')
+bullet_img = pygame.image.load('image/bullets2.png')
 bullet_icon = pygame.transform.scale (bullet_img, (25, 25))
 bulletX = 0
 bulletY = 500
