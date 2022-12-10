@@ -2,13 +2,13 @@ import pygame, math, os, time, random
 
 pygame.init()
 
-WIDTH, HEIGHT = 500, 750
+WIDTH, HEIGHT = 430, 650
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("A mishmash")
 
-small_enemy = pygame.image.load(os.path.realpath("image/small_enemy.png"))
-player_icon = pygame.image.load(os.path.realpath("image/player_icon.png"))
-enery_circle = pygame.image.load(os.path.relpath("image/energy_circle.png"))
+small_enemy = pygame.image.load(os.path.realpath("image/small_enemy2.png"))
+player_icon = pygame.image.load(os.path.realpath("image/player_icon2.png"))
+enery_circle = pygame.image.load(os.path.relpath("image/energy_circle2.png"))
 hidden_thing = pygame.image.load(os.path.realpath("image/hidden_thing.png"))
 background = pygame.image.load(os.path.realpath("image/background.png"))
 
