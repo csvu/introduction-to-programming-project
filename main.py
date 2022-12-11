@@ -3,6 +3,7 @@ import pygame, math, os, time, random
 pygame.init()
 
 WIDTH, HEIGHT = 430, 650
+modern_grey = (42, 42, 42)
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("A mishmash")
 
@@ -94,12 +95,16 @@ class Enemy(Shuttle):
         self.mask = pygame.mask.from_surface(self.shuttle_image)
         self.word = randomword
         self.health = len(self.word)
+        self.color = modern_grey
 
     def draw(self):
         super().draw()
         text = font.render(self.word, False, (255, 255, 255))
         text_w, text_h = text.get_size()
-        screen.blit(text, (self.x + self.getWidth() / 2 - text_w / 2, self.y - text_h))
+        if self.color != None:
+                pygame.draw.rect(screen, modern_grey, pygame.Rect(self.x + self.getWidth() / 2 - text_w / 2 - 8, self.y - text_h - 8, text_w + 8, text_h + 8), 0, 3)
+        if self.health != 0:
+                screen.blit(text, (self.x + self.getWidth() / 2 - text_w / 2, self.y - text_h))
 
     def move(self, player, speed):
         unit_x, unit_y = player.x - self.x, player.y - self.y
@@ -109,7 +114,7 @@ class Enemy(Shuttle):
         self.y += unit_y * speed
 
 def runGame():
-    current_enemy_index = -1
+    current_enemy_index = 0
     running = True
     FPS = 60
     level = 3
@@ -117,8 +122,8 @@ def runGame():
     lost_font = pygame.font.SysFont("Calibri", 60)
 
     enemies = []
-    wave_length = 0
-    enemy_speed = 1
+    wave_length = 2
+    enemy_speed = 0.6
     energy_circle_speed = 10
 
     player = Player(0, 0)
@@ -163,7 +168,7 @@ def runGame():
                 break
         if flag:
             level += 1
-            wave_length += 1
+            wave_length += 2
             
             for i in range(wave_length):
                 lines = open(os.path.realpath(f"word_list/{level}_chars/{chr(i + 97)}.txt")).read().splitlines()
@@ -174,25 +179,28 @@ def runGame():
             if event.type == pygame.QUIT:
                 quit()
             if event.type == pygame.KEYDOWN:
-                if current_enemy_index == -1:
+                if current_enemy_index == 0:
                     for i in range(len(enemies)):
                         if i >= len(enemies):
                             continue
                         if enemies[i].word == "":
                             continue
                         if (event.key == ord(enemies[i].word[0])):
-                            current_enemy_index = i
-                            player.shoot(enemies[i])
-                            enemies[i].word = enemies[i].word[1 : ]
-                            if enemies[i].word == "":
-                                current_enemy_index = -1
+                            current_enemy_index = -1
+                            enemies.append(enemies.pop(i))
+                            player.shoot(enemies[current_enemy_index])
+                            enemies[current_enemy_index].word = enemies[current_enemy_index].word[1 : ]
+                            if enemies[current_enemy_index].word == "":
+                                enemies[current_enemy_index].color = None
+                                current_enemy_index = 0
                             break
                 else:
                     if event.key == ord(enemies[current_enemy_index].word[0]):
-                        player.shoot(enemies[i])
+                        player.shoot(enemies[current_enemy_index])
                         enemies[current_enemy_index].word = enemies[current_enemy_index].word[1 : ]
                         if enemies[current_enemy_index].word == "":
-                            current_enemy_index = -1
+                            enemies[current_enemy_index].color = None
+                            current_enemy_index = 0
 
         for enemy in enemies[:]:
             if enemy.health != 0:
