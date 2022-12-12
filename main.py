@@ -219,6 +219,9 @@ def runGame():
 
 def menu():
     #tìm hiểu cách cho âm thanh chạy cả game
+    pygame.mixer.init()
+    pygame.mixer.music.load("music/M02.mp3")
+    pygame.mixer.music.play(10) #lặp nhạc nền 10 lần phòng việc chơi lâu
     main_running = True
     while main_running:
         ############################
