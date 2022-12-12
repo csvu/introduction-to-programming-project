@@ -1,4 +1,5 @@
 import pygame, math, os, time, random
+from pyvidplayer import Video
 
 pygame.init()
 
@@ -9,10 +10,11 @@ pygame.display.set_caption("A mishmash")
 
 small_enemy = pygame.image.load(os.path.realpath("image/small_enemy2.png"))
 player_icon = pygame.image.load(os.path.realpath("image/player_icon2.png"))
-enery_circle = pygame.image.load(os.path.relpath("image/energy_circle2.png"))
+enery_circle = pygame.image.load(os.path.relpath("image/energy_circle3.png"))
 hidden_thing = pygame.image.load(os.path.realpath("image/hidden_thing.png"))
 background = pygame.image.load(os.path.realpath("image/background.png"))
-
+effect = Video ("isCollision.mp4")
+effect.setsize (30,30)
 font = pygame.font.SysFont("Calibri", 20, True)
 
 def isObjsCollision(obj1, obj2):
@@ -79,9 +81,12 @@ class Player(Shuttle):
         for bullet in self.bullets:
             bullet.move(speed)
             if bullet.isBulletCollision(bullet.chosen_enemy):
+
                 #chỗ này thêm âm thanh và hiệu ứng nổ khi đạn đụng trúng enemy
                 bullet.chosen_enemy.health -= 1
+                effect.draw (SCREEN,(x,y))
                 self.bullets.remove(bullet)
+
 
     def draw(self):
         super().draw()
