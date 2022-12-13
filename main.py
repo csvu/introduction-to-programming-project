@@ -14,6 +14,8 @@ enery_circle = pygame.image.load(os.path.relpath("image/energy_circle2.png"))
 hidden_thing = pygame.image.load(os.path.realpath("image/hidden_thing.png"))
 background = pygame.image.load(os.path.realpath("image/background.png"))
 
+
+
 font = pygame.font.SysFont("Calibri", 20, True)
 
 def isObjsCollision(obj1, obj2):
@@ -80,8 +82,9 @@ class Player(Shuttle):
         for bullet in self.bullets:
             bullet.move(speed)
             if bullet.isBulletCollision(bullet.chosen_enemy):
-
+                
                 #chỗ này thêm âm thanh và hiệu ứng nổ khi đạn đụng trúng enemy
+                
                 bullet.chosen_enemy.health -= 1
                 self.bullets.remove(bullet)
 
@@ -115,6 +118,8 @@ class Enemy(Shuttle):
         unit_x, unit_y = unit_x / dist, unit_y / dist
         self.x += unit_x * speed
         self.y += unit_y * speed
+
+
 
 def runGame():
     current_enemy_index = 0
