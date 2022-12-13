@@ -114,6 +114,9 @@ class Enemy(Shuttle):
         self.y += unit_y * speed
 
 def runGame():
+
+    pygame.display.set_caption("Z-Type")
+
     current_enemy_index = 0
     running = True
     FPS = 60
@@ -160,7 +163,7 @@ def runGame():
                 running = False
             else:
                 continue
-            
+
         flag = True
         for enemy in enemies:
             if (enemy.word != ""):
@@ -169,7 +172,7 @@ def runGame():
         if flag:
             level += 1
             wave_length += 2
-            
+
             for i in range(wave_length):
                 lines = open(os.path.realpath(f"word_list/{level}_chars/{chr(i + 97)}.txt")).read().splitlines()
                 enemy = Enemy(random.randrange(-100, WIDTH + 100), random.randrange(-200, -100), random.choice(lines))
@@ -205,7 +208,7 @@ def runGame():
         for enemy in enemies[:]:
             if enemy.health != 0:
                 enemy.move(player, enemy_speed)
-            if isObjsCollision(enemy, player): 
+            if isObjsCollision(enemy, player):
                 #Chỗ này thêm âm thanh và hiệu ứng nổ khi bị thua (enemy đụng trúng player)
                 player.is_alive = False
             elif enemy.health == 0:
@@ -214,22 +217,157 @@ def runGame():
 
         player.moveBullets(energy_circle_speed)
 
+#button class
+class Button():
+	def __init__(self, x, y, image, scale):
+		width = image.get_width()
+		height = image.get_height()
+		self.image = pygame.transform.scale(image, (int(width * scale), int(height * scale)))
+		self.rect = self.image.get_rect()
+		self.rect.topleft = (x, y)
+		self.clicked = False
+
+	def draw(self, surface):
+		action = False
+		#get mouse position
+		pos = pygame.mouse.get_pos()
+
+		#check mouseover and clicked conditions
+		if self.rect.collidepoint(pos):
+			if pygame.mouse.get_pressed()[0] == 1 and self.clicked == False:
+				self.clicked = True
+				action = True
+
+		if pygame.mouse.get_pressed()[0] == 0:
+			self.clicked = False
+
+		#draw button on screen
+		surface.blit(self.image, (self.rect.x, self.rect.y))
+
+		return action
+
 def menu():
     #tìm hiểu cách cho âm thanh chạy cả game
+    menu_running = True
+
+    menu_bg = pygame.image.load('image/menu_background.jfif')
+    menu_bg = pygame.transform.scale(menu_bg, (WIDTH, HEIGHT))
+
+    main_menu = pygame.image.load('image/main_menu.png')
+    main_menu = pygame.transform.scale(main_menu, (430, 120))
+
+    menu_start_btn = pygame.image.load('image/start_menu.png').convert_alpha()
+    # menu_start_btn = pygame.transform.scale(menu_start_btn, (280, 112))
+    menu_exit_btn = pygame.image.load('image/exit_menu.png').convert_alpha()
+    # menu_exit_btn = pygame.transform.scale(menu_exit_btn, (240, 110))
+
+    start_button = Button(25, 300, menu_start_btn, 0.8)
+    exit_button = Button(100, 430, menu_exit_btn, 0.6)
+
+    # welcome_img = pygame.image.load('image/welcome.png')
+    # welcome_img = Button(60, 255, welcome_img, 0.2)
+
+    gura_img = pygame.image.load('image/gura_menu.png')
+    gura_img = Button(240, 225, gura_img, 0.2)
+    gura2_img = pygame.image.load('image/gura2_menu.png')
+    gura2_img = Button(65, 450, gura2_img, 0.1)
+
+    #==========SETTING==========
+    setting_running = False
+    check_settting_btn = False
+
+    color_setting = (230, 230, 250)
+    surface_setting = pygame.display.set_mode((WIDTH, HEIGHT))
+
+    back_img = pygame.image.load('image/back_button.png')
+    back_setting_button = Button(270, 590, back_img, 0.3)
+
+    menu_setting_btn = pygame.image.load('image/setting_btn.png')
+    setting_button = Button(360, 580, menu_setting_btn, 0.08)
+
+    #===========Credit==========
+    credits_running = False
+
+    color_credits = (54, 69, 79)
+    surface_credits = pygame.display.set_mode((WIDTH, HEIGHT))
+
+    back_credits_button = Button(270, 590, back_img, 0.3)
+
+    menu_credits_btn = pygame.image.load('image/credit_button.png')
+    credits_button = Button(102, 530, menu_credits_btn, 0.5)
+
+    #============================
+
+    pygame.mixer.init()
+    pygame.mixer.music.load("music/M02.mp3")
+    pygame.mixer.music.play(10) #lặp nhạc nền 10 lần phòng việc chơi lâu
     main_running = True
     while main_running:
         ############################
         #BLIT giao diện mở đầu ở đây
         #NEW GAME
-        #QUIT
+        # QUIT
+        if (menu_running == True):
+            pygame.display.set_caption("MAIN MENU")
+            screen.blit(menu_bg, (0,0))
+            screen.blit(main_menu, (0, 10))
+
+            start_button.draw(screen)
+            exit_button.draw(screen)
+            setting_button.draw(screen)
+            credits_button.draw(screen)
+
+            # welcome_img.draw(screen)
+            gura_img.draw(screen)
+            gura2_img.draw(screen)
+
+        if (setting_running == True):
+            pygame.display.set_caption("SETTING")   
+            surface_setting.fill(color_setting)
+            back_setting_button.draw(screen)
+
+        if (credits_running == True):
+            pygame.display.set_caption("CREDITS")
+            surface_credits.fill(color_credits)
+            back_credits_button.draw(screen)
         ############################
         pygame.display.update()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 main_running = False
-            if event.type == pygame.MOUSEBUTTONDOWN: #Chỗ này thay bằng if <ẤN VÀO NÚT NEW GAME>#
-                #âm thanh new game (xem ztype)
-                runGame()
-            #thêm dòng if ấn vào nút QUIT thì pygame.quit()
 
+            x, y = pygame.mouse.get_pos()
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if check_settting_btn == False:
+                #Chỗ này thay bằng if <ẤN VÀO NÚT NEW GAME>#
+                    if start_button.rect.collidepoint(x, y):
+                        #âm thanh new game (xem ztype)
+                        runGame()
+
+                    #thêm dòng if ấn vào nút QUIT thì pygame.quit()
+                    if exit_button.rect.collidepoint(x, y):
+                        main_running = False
+
+                    if setting_button.rect.collidepoint(x, y):
+                        check_settting_btn = True
+                        setting_running = True
+                        menu_running = False
+
+                    if credits_button.rect.collidepoint(x, y):
+                        check_settting_btn = True
+                        credits_running = True
+                        menu_running = False
+
+                # Setting
+                elif check_settting_btn == True:
+                    if back_setting_button.rect.collidepoint(x, y):
+                        menu_running = True
+                        setting_running = False
+                        check_settting_btn = False
+                    if back_credits_button.rect.collidepoint(x, y):
+                        menu_running = True
+                        credits_running = False
+                        check_settting_btn = False
+                     
 menu()
