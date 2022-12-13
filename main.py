@@ -207,10 +207,16 @@ def runGame():
                 enemy.move(player, enemy_speed)
             if isObjsCollision(enemy, player): 
                 #Chỗ này thêm âm thanh và hiệu ứng nổ khi bị thua (enemy đụng trúng player)
+                
                 player.is_alive = False
             elif enemy.health == 0:
                 if enemy.shuttle_image != hidden_thing:
                     enemy.shuttle_image = hidden_thing
+         def image_draw(self, url, xLocal, yLocal, xImg, yImg):  # In ra người hình ảnh
+         PlanesImg = pygame.image.load(url)
+         PlanesImg = pygame.transform.scale(
+            PlanesImg, (xImg, yImg))  # change size image
+        self.screen.blit(PlanesImg, (xLocal, yLocal))
 
         player.moveBullets(energy_circle_speed)
 
