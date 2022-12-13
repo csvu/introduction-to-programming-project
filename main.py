@@ -1,4 +1,5 @@
 import pygame, math, os, time, random
+from sound import music #từ sound.py móc class music ra
 
 pygame.init()
 
@@ -146,6 +147,7 @@ def runGame():
             enemy.draw()
         player.draw()
         if lost:
+            '''pygame.mixer.music.pause()'''
             lost_label = lost_font.render("You loser:)", 1, (255,255,255))
             screen.blit(lost_label, (WIDTH / 2 - lost_label.get_width() / 2, 350))
         pygame.display.update()
@@ -247,8 +249,9 @@ class Button():
 		return action
 
 def menu():
-    #tìm hiểu cách cho âm thanh chạy cả game
     menu_running = True
+
+    music.musicGame(menu_running, False)
 
     menu_bg = pygame.image.load('image/menu_background.jfif')
     menu_bg = pygame.transform.scale(menu_bg, (WIDTH, HEIGHT))
@@ -296,11 +299,6 @@ def menu():
     menu_credits_btn = pygame.image.load('image/credit_button.png')
     credits_button = Button(102, 530, menu_credits_btn, 0.5)
 
-    #============================
-
-    pygame.mixer.init()
-    pygame.mixer.music.load("music/M02.mp3")
-    pygame.mixer.music.play(10) #lặp nhạc nền 10 lần phòng việc chơi lâu
     main_running = True
     while main_running:
         ############################
@@ -342,7 +340,9 @@ def menu():
                 if check_settting_btn == False:
                 #Chỗ này thay bằng if <ẤN VÀO NÚT NEW GAME>#
                     if start_button.rect.collidepoint(x, y):
-                        #âm thanh new game (xem ztype)
+                        menu_running = False
+                        game_running = True #đánh dấu đã thoát menu, vào game chơi
+                        music.musicGame(menu_running, game_running)
                         runGame()
 
                     #thêm dòng if ấn vào nút QUIT thì pygame.quit()
