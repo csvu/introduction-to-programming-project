@@ -114,6 +114,9 @@ class Enemy(Shuttle):
         self.y += unit_y * speed
 
 def runGame():
+
+    pygame.display.set_caption("Z-Type")
+
     current_enemy_index = 0
     running = True
     FPS = 60
@@ -261,8 +264,8 @@ def menu():
     start_button = Button(25, 300, menu_start_btn, 0.8)
     exit_button = Button(100, 430, menu_exit_btn, 0.6)
 
-    welcome_img = pygame.image.load('image/welcome.png')
-    welcome_img = Button(0, 550, welcome_img, 0.3)
+    # welcome_img = pygame.image.load('image/welcome.png')
+    # welcome_img = Button(60, 255, welcome_img, 0.2)
 
     gura_img = pygame.image.load('image/gura_menu.png')
     gura_img = Button(240, 225, gura_img, 0.2)
@@ -279,12 +282,19 @@ def menu():
     back_img = pygame.image.load('image/back_button.png')
     back_setting_button = Button(270, 590, back_img, 0.3)
 
-    menu_setting_btn = pygame.image.load('image/setting_menu.png')
-    setting_button = Button(350, 570, menu_setting_btn, 0.05)
+    menu_setting_btn = pygame.image.load('image/setting_btn.png')
+    setting_button = Button(360, 580, menu_setting_btn, 0.08)
 
     #===========Credit==========
+    credits_running = False
 
-    
+    color_credits = (54, 69, 79)
+    surface_credits = pygame.display.set_mode((WIDTH, HEIGHT))
+
+    back_credits_button = Button(270, 590, back_img, 0.3)
+
+    menu_credits_btn = pygame.image.load('image/credit_button.png')
+    credits_button = Button(102, 530, menu_credits_btn, 0.5)
 
     #============================
 
@@ -298,24 +308,28 @@ def menu():
         #NEW GAME
         # QUIT
         if (menu_running == True):
-            pygame.display.set_caption("Menu")
+            pygame.display.set_caption("MAIN MENU")
             screen.blit(menu_bg, (0,0))
             screen.blit(main_menu, (0, 10))
-            # screen.blit(menu_start_btn, (75, 300))
-            # screen.blit(menu_exit_btn, (95, 450))
 
             start_button.draw(screen)
             exit_button.draw(screen)
             setting_button.draw(screen)
+            credits_button.draw(screen)
 
-            welcome_img.draw(screen)
+            # welcome_img.draw(screen)
             gura_img.draw(screen)
             gura2_img.draw(screen)
 
         if (setting_running == True):
-            pygame.display.set_caption("Setting")   
+            pygame.display.set_caption("SETTING")   
             surface_setting.fill(color_setting)
             back_setting_button.draw(screen)
+
+        if (credits_running == True):
+            pygame.display.set_caption("CREDITS")
+            surface_credits.fill(color_credits)
+            back_credits_button.draw(screen)
         ############################
         pygame.display.update()
         for event in pygame.event.get():
@@ -336,15 +350,24 @@ def menu():
                         main_running = False
 
                     if setting_button.rect.collidepoint(x, y):
-                        setting_running = True
                         check_settting_btn = True
+                        setting_running = True
                         menu_running = False
+
+                    if credits_button.rect.collidepoint(x, y):
+                        check_settting_btn = True
+                        credits_running = True
+                        menu_running = False
+
                 # Setting
                 elif check_settting_btn == True:
                     if back_setting_button.rect.collidepoint(x, y):
-                        # if (x >= 273 and x <= 420 and y >= 595 and y <= 640):
-                        setting_running = False
                         menu_running = True
+                        setting_running = False
+                        check_settting_btn = False
+                    if back_credits_button.rect.collidepoint(x, y):
+                        menu_running = True
+                        credits_running = False
                         check_settting_btn = False
                      
 menu()
