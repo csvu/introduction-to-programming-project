@@ -6,7 +6,6 @@ pygame.init()
 WIDTH, HEIGHT = 430, 650
 modern_grey = (42, 42, 42)
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("A mishmash")
 
 small_enemy = pygame.image.load(os.path.realpath("image/small_enemy2.png"))
 player_icon = pygame.image.load(os.path.realpath("image/player_icon2.png"))
@@ -116,7 +115,7 @@ class Enemy(Shuttle):
 
 def runGame():
 
-    pygame.display.set_caption("Z-Type")
+    pygame.display.set_caption("A mishmash")
 
     current_enemy_index = 0
     running = True
@@ -262,25 +261,28 @@ def menu():
     menu_bg = pygame.image.load('image/menu_background.jfif')
     menu_bg = pygame.transform.scale(menu_bg, (WIDTH, HEIGHT))
 
-    main_menu = pygame.image.load('image/main_menu.png')
-    main_menu = pygame.transform.scale(main_menu, (430, 120))
+    # main_menu = pygame.image.load('image/main_menu.png')
+    # main_menu = pygame.transform.scale(main_menu, (430, 120))
 
     menu_start_btn = pygame.image.load('image/start_menu.png').convert_alpha()
-    # menu_start_btn = pygame.transform.scale(menu_start_btn, (280, 112))
+    
     menu_exit_btn = pygame.image.load('image/exit_menu.png').convert_alpha()
-    # menu_exit_btn = pygame.transform.scale(menu_exit_btn, (240, 110))
 
     start_button = Button(25, 300, menu_start_btn, 0.8)
     exit_button = Button(100, 430, menu_exit_btn, 0.6)
-
-    # welcome_img = pygame.image.load('image/welcome.png')
-    # welcome_img = Button(60, 255, welcome_img, 0.2)
 
     gura_img = pygame.image.load('image/gura_menu.png')
     gura_img = Button(240, 225, gura_img, 0.2)
     gura2_img = pygame.image.load('image/gura2_menu.png')
     gura2_img = Button(65, 450, gura2_img, 0.1)
 
+    font_8bits = pygame.font.Font("fonts/pixeboy-font/Pixeboy-z8XGD.ttf", 86)
+    title_main_menu = font_8bits.render('A mishmash', False, (255, 192, 0))
+    title_width = title_main_menu.get_width()
+    title_height = title_main_menu.get_height()
+    x_title = WIDTH // 2 - title_width // 2
+    y_title = HEIGHT // 10 - title_height // 10
+    
     #==========SETTING==========
     setting_running = False
     check_settting_btn = False
@@ -305,6 +307,19 @@ def menu():
     menu_credits_btn = pygame.image.load('image/credit_button.png')
     credits_button = Button(102, 530, menu_credits_btn, 0.5)
 
+    
+    font_8bits = pygame.font.Font("fonts/pixeboy-font/Pixeboy-z8XGD.ttf", 32)
+    font_8bits_title = pygame.font.Font("fonts/pixeboy-font/Pixeboy-z8XGD.ttf", 86)
+    credits_team = font_8bits_title.render('Nhom 3', False, (255, 192, 0))
+    credits_1= font_8bits.render('Ngo Van Khai: 22127174_Leader', False, (255, 255, 255))
+    credits_2= font_8bits.render('Dang Nguyen Vu: 22127461', False, (255, 255, 255))
+    credits_3= font_8bits.render('Le Thi Thanh Thuy: 22127411', False, (255, 255, 255))
+    credits_4= font_8bits.render('Tran Thi My Y: 22127468', False, (255, 255, 255))
+    credits_5= font_8bits.render('To Quoc Thanh: 22127388', False, (255, 255, 255))
+    credits_6= font_8bits.render('Thai Huyen Tung: 22127441', False, (255, 255, 255))
+    credits_music = font_8bits.render('Music:', False, (255, 192, 0))
+    credits_name = font_8bits.render('Nishiki Yasunori', False, (255, 255, 255))
+
     main_running = True
     while main_running:
         ############################
@@ -314,14 +329,14 @@ def menu():
         if (menu_running == True):
             pygame.display.set_caption("MAIN MENU")
             screen.blit(menu_bg, (0,0))
-            screen.blit(main_menu, (0, 10))
+            screen.blit(title_main_menu, (x_title, y_title))
+            # screen.blit(main_menu, (0, 10))
 
             start_button.draw(screen)
             exit_button.draw(screen)
             setting_button.draw(screen)
             credits_button.draw(screen)
 
-            # welcome_img.draw(screen)
             gura_img.draw(screen)
             gura2_img.draw(screen)
 
@@ -334,6 +349,18 @@ def menu():
             pygame.display.set_caption("CREDITS")
             surface_credits.fill(color_credits)
             back_credits_button.draw(screen)
+            
+            pygame.draw.rect(screen, (93, 63, 211), pygame.Rect((WIDTH // 2 - (credits_team.get_width()) // 2 - 12, 40, (credits_team.get_width()) + 20, 70)), 0, 10)
+
+            screen.blit(credits_team, ((WIDTH // 2 - (credits_team.get_width()) // 2, 50)))
+            screen.blit(credits_1, ((WIDTH // 2 - (credits_1.get_width()) // 2, 150)))
+            screen.blit(credits_2, ((WIDTH // 2 - (credits_2.get_width()) // 2, 200)))
+            screen.blit(credits_3, ((WIDTH // 2 - (credits_3.get_width()) // 2, 250)))
+            screen.blit(credits_4, ((WIDTH // 2 - (credits_4.get_width()) // 2, 300)))
+            screen.blit(credits_5, ((WIDTH // 2 - (credits_5.get_width()) // 2, 350)))
+            screen.blit(credits_6, ((WIDTH // 2 - (credits_6.get_width()) // 2, 400)))
+            screen.blit(credits_music, ((WIDTH // 2 - (credits_music.get_width()) // 2, 450)))
+            screen.blit(credits_name, ((WIDTH // 2 - (credits_name.get_width()) // 2, 500)))
         ############################
         pygame.display.update()
         for event in pygame.event.get():
