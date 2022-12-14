@@ -1,5 +1,6 @@
 import pygame, math, os, time, random
 from sound import music #từ sound.py móc class music ra
+from numpy import log2, power #power tinh ban kinh hinh tron,
 
 pygame.init()
 
@@ -55,6 +56,22 @@ def isObjsCollision(obj1, obj2):
     offset_x = obj2.x - obj1.x
     offset_y = obj2.y - obj1.y
     return obj1.mask.overlap(obj2.mask, (offset_x, offset_y)) != None
+
+def explosion(screen, color, position):
+    Blast = []
+    for i in range(1, 6):
+        Blast.append(pygame.image.load("image/exp" + str(i) + ".png"))
+    print(len(Blast))
+
+    for i in range(1, 60, 1):
+        screen.blit(background, (0,0))
+        if (i < 25):
+            HalfWidth = int(Blast[int(i/5)].get_width()/2)
+            HalfHeight = Blast[int(i/5)].get_height()/2
+            screen.blit(Blast[int(i/5)], (position[0] - HalfWidth, int(position[1] - HalfHeight)))
+        pygame.draw.circle(screen, (70, 163, 141), position , int(power(i, 2.2)), int(4/3*log2(i)))
+        pygame.display.flip()
+        pygame.time.delay(50)
 
 class Bullet:
     def __init__(self, x, y, image, enemy):
@@ -291,7 +308,7 @@ def runGame():
                 enemy.move(player, enemy_speed)
             if isObjsCollision(enemy, player):
                 #Chỗ này thêm âm thanh và hiệu ứng nổ khi bị thua (enemy đụng trúng player)
-                
+                explosion(screen, (70, 163, 141), (player.x, player.y))
                 player.is_alive = False
             elif enemy.health == 0:
                 if enemy.shuttle_image != hidden_thing:
