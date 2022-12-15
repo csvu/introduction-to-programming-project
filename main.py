@@ -71,7 +71,7 @@ def explosion(screen, color, position):
             screen.blit(Blast[int(i/5)], (position[0] - HalfWidth, int(position[1] - HalfHeight)))
         pygame.draw.circle(screen, (70, 163, 141), position , int(math.pow(i, 2.2)), int(4/3*math.log2(i)))
         pygame.display.flip()
-        pygame.time.delay(50)
+        pygame.time.delay(60)
 
 class Bullet:
     def __init__(self, x, y, image, enemy):
@@ -217,7 +217,7 @@ def runGame():
 
     enemies = []
     wave_length = 2
-    enemy_speed = 0.6
+    enemy_speed = 10
     energy_circle_speed = 10
 
     player = Player(0, 0)
@@ -237,7 +237,6 @@ def runGame():
             enemy.draw()
         player.draw()
         if lost:
-            '''pygame.mixer.music.pause()'''
             lost_label = lost_font.render("You loser:)", 1, (255,255,255))
             screen.blit(lost_label, (WIDTH / 2 - lost_label.get_width() / 2, 350))
         pygame.display.update()
@@ -307,7 +306,7 @@ def runGame():
             if enemy.health != 0:
                 enemy.move(player, enemy_speed)
             if isObjsCollision(enemy, player):
-                #Chỗ này thêm âm thanh và hiệu ứng nổ khi bị thua (enemy đụng trúng player)
+                music.soundEffect()
                 explosion(screen, (70, 163, 141), (player.x, player.y))
                 player.is_alive = False
             elif enemy.health == 0:
