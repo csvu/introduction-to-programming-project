@@ -175,11 +175,11 @@ def paused():
     color_paused = (237, 234, 222)
 
     paused_title = font_8bits_title.render('Pausing', False, (0, 0, 0))
-    press_continue = font_8bits.render('Press Enter or Esc to continue...', False, (0, 0, 0))
+    press_continue = font_8bits.render('Press Esc to continue...', False, (0, 0, 0))
 
 
-    back_img = pygame.image.load('image/back_button.png')
-    back_paused_button = Button(270, 590, back_img, 0.3)
+    back_to_menu_img = pygame.image.load('image/back_to_menu_button.png')
+    back_paused_button = Button(190, 590, back_to_menu_img, 0.3)
     
     while paused_game:
         screen.fill((color_paused))
@@ -194,7 +194,7 @@ def paused():
             if event.type == pygame.QUIT:
                 quit()
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN or event.key == pygame.K_ESCAPE:
+                if event.key == pygame.K_ESCAPE:
                     paused_game = False
 
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -229,16 +229,54 @@ def runGame():
     lost = False
     lost_screen_duration = 0
 
+    #==========Hien thi man hinh khi ban die==========
+    def showLost():
+        show_lost = True
+        lost_color_bg = (105,105,105)
+        lost_announcement = font_8bits_title.render('Loser', False, (255, 255, 255,))
+
+        back_to_menu_img = pygame.image.load('image/back_to_menu_button.png')
+        back_to_menu_button = Button(60, (HEIGHT // 1.5 - (back_to_menu_img.get_height()) // 1.5 ), back_to_menu_img, 0.4)
+
+        replay_img = pygame.image.load('image/replay_buttonn.png')
+        replay_button = Button(50, (HEIGHT // 2 - (replay_img.get_height()) // 2 ), replay_img, 0.4)
+
+        while show_lost:
+            screen.fill(lost_color_bg)
+            screen.blit(lost_announcement, ((WIDTH // 2 - (lost_announcement.get_width()) // 2), 20))
+            back_to_menu_button.draw(screen)
+            replay_button.draw(screen)
+            pygame.display.flip()
+
+            x, y = pygame.mouse.get_pos()
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    quit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_q:
+                        quit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if back_to_menu_button.rect.collidepoint(x, y):
+                        show_lost = False
+                        menu()
+                    if replay_button.rect.collidepoint(x, y):
+                        show_lost = False
+                        runGame()
+
+    #====================================================================
+
     def drawBoard():
         screen.blit(background, (0, 0))
-        nth_wave = main_font.render(f"Wave: {level - 3}", 1, (255,255,255))
+        nth_wave = font_8bits_title.render(f"Wave: {level - 3}", 1, (255,255,255))
         screen.blit(nth_wave, ((WIDTH - nth_wave.get_width()) / 2, 10))
         for enemy in enemies:
             enemy.draw()
         player.draw()
         if lost:
-            lost_label = lost_font.render("You loser:)", 1, (255,255,255))
-            screen.blit(lost_label, (WIDTH / 2 - lost_label.get_width() / 2, 350))
+            # lost_label = lost_font.render("You loser:)", 1, (255,255,255))
+            # screen.blit(lost_label, (WIDTH / 2 - lost_label.get_width() / 2, 350))
+            showLost()
         pygame.display.update()
 
       
@@ -291,7 +329,7 @@ def runGame():
                                 current_enemy_index = 0
                             break
                 #==========Nhan Nut Enter de Paused Game==========
-                if event.key == pygame.K_RETURN or event.key == pygame.K_ESCAPE: # Nhan vao Enter hoac Esc thi Paused Game
+                if event.key == pygame.K_ESCAPE: # Nhan vao Esc thi Paused Game
                     paused()
                 #=================================================
                 else:
@@ -357,7 +395,7 @@ def menu():
     surface_setting = pygame.display.set_mode((WIDTH, HEIGHT))
 
     back_img = pygame.image.load('image/back_button.png')
-    back_setting_button = Button(270, 590, back_img, 0.3)
+    back_setting_button = Button(290, 590, back_img, 0.3)
 
     menu_setting_btn = pygame.image.load('image/setting_btn.png')
     setting_button = Button(360, 580, menu_setting_btn, 0.08)
@@ -368,7 +406,7 @@ def menu():
     color_credits = (54, 69, 79)
     surface_credits = pygame.display.set_mode((WIDTH, HEIGHT))
 
-    back_credits_button = Button(270, 590, back_img, 0.3)
+    back_credits_button = Button(290, 590, back_img, 0.3)
 
     menu_credits_btn = pygame.image.load('image/credit_button.png')
     credits_button = Button(102, 530, menu_credits_btn, 0.5)
@@ -431,7 +469,7 @@ def menu():
         pygame.display.update()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                main_running = False
+                quit()
 
             x, y = pygame.mouse.get_pos()
 
