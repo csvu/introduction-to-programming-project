@@ -1,6 +1,6 @@
 import pygame, math, os, time, random
 from sound import music #từ sound.py móc class music ra
-from numpy import log2, power #tai thu vien numpy bang cach vao terminal gõ pip install numpy rồi nhấn enter.
+#from numpy import log2, power #tai thu vien numpy bang cach vao terminal gõ pip install numpy rồi nhấn enter.
 
 pygame.init()
 
@@ -69,7 +69,7 @@ def explosion(screen, color, position):
             HalfWidth = int(Blast[int(i/5)].get_width()/2)
             HalfHeight = Blast[int(i/5)].get_height()/2
             screen.blit(Blast[int(i/5)], (position[0] - HalfWidth, int(position[1] - HalfHeight)))
-        pygame.draw.circle(screen, (70, 163, 141), position , int(power(i, 2.2)), int(4/3*log2(i)))
+        pygame.draw.circle(screen, (70, 163, 141), position , int(math.pow(i, 2.2)), int(4/3*math.log2(i)))
         pygame.display.flip()
         pygame.time.delay(50)
 
@@ -230,7 +230,7 @@ def runGame():
     lost_screen_duration = 0
 
     def drawBoard():
-        screen.blit(background, (0,0))
+        screen.blit(background, (0, 0))
         nth_wave = main_font.render(f"Wave: {level - 3}", 1, (255,255,255))
         screen.blit(nth_wave, ((WIDTH - nth_wave.get_width()) / 2, 10))
         for enemy in enemies:
@@ -253,7 +253,7 @@ def runGame():
             lost_screen_duration += 1
         if lost:
             if lost_screen_duration > FPS * 3:
-                running = False
+                break
             else:
                 continue
 
