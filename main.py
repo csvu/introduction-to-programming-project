@@ -6,6 +6,9 @@ pygame.init()
 
 WIDTH, HEIGHT = 430, 650
 
+lost = False
+to_rungame = False
+
 white = (255, 255, 255)
 modern_grey = (42, 42, 42)
 mustard_yellow = (255, 219, 88)
@@ -13,9 +16,9 @@ mustard_yellow = (255, 219, 88)
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
 #===========Fonts 8Bits===========
-font_8bits_title_main_menu = pygame.font.Font("fonts/pixeboy-font/Pixeboy-z8XGD.ttf", 86)
-font_8bits = pygame.font.Font("fonts/pixeboy-font/Pixeboy-z8XGD.ttf", 32)
-font_8bits_title = pygame.font.Font("fonts/pixeboy-font/Pixeboy-z8XGD.ttf", 86)
+font_8bits_title_main_menu = pygame.font.Font("fonts/pixeboy-font/Pixeboy-z8XGD.ttf", 86) # dành cho cỡ chữ như main menu
+font_8bits = pygame.font.Font("fonts/pixeboy-font/Pixeboy-z8XGD.ttf", 32) # dành cho cỡ chữ thường
+font_8bits_title = pygame.font.Font("fonts/pixeboy-font/Pixeboy-z8XGD.ttf", 86) # dành cho cỡ chữ credits và paused
 #=================================
 
 small_enemy = pygame.image.load(os.path.realpath("image/small_enemy2.png"))
@@ -75,7 +78,7 @@ def explosion(screen, color, position):
             screen.blit(Blast[int(i/5)], (position[0] - HalfWidth, int(position[1] - HalfHeight)))
         pygame.draw.circle(screen, (70, 163, 141), position , int(math.pow(i, 2.2)), int(4/3*math.log2(i)))
         pygame.display.flip()
-        pygame.time.delay(50)
+        pygame.time.delay(60)
 
 class Bullet:
     def __init__(self, x, y, image, enemy):
@@ -180,11 +183,11 @@ def paused():
     color_paused = (237, 234, 222)
 
     paused_title = font_8bits_title.render('Pausing', False, (0, 0, 0))
-    press_continue = font_8bits.render('Press Enter or Esc to continue...', False, (0, 0, 0))
+    press_continue = font_8bits.render('Press Esc to continue...', False, (0, 0, 0))
 
 
-    back_img = pygame.image.load('image/back_button.png')
-    back_paused_button = Button(270, 590, back_img, 0.3)
+    back_to_menu_img = pygame.image.load('image/back_to_menu_button.png')
+    back_paused_button = Button(190, 590, back_to_menu_img, 0.3)
     
     while paused_game:
         screen.fill((color_paused))
@@ -199,7 +202,7 @@ def paused():
             if event.type == pygame.QUIT:
                 quit()
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN or event.key == pygame.K_ESCAPE:
+                if event.key == pygame.K_ESCAPE:
                     paused_game = False
 
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -208,6 +211,48 @@ def paused():
                     menu()
 #=============================================================================
 
+#==========Hien thi man hinh khi ban die - END GAME==========
+def showLost():
+        show_lost = True
+        lost_color_bg = (105,105,105)
+        lost_announcement = font_8bits_title.render('Loser', False, (255, 255, 255,))
+        lost_announcement_footer = font_8bits.render('Con   cai   nit !!! :)', False, (255, 255, 255,))
+
+        back_to_menu_img = pygame.image.load('image/back_to_menu_button.png')
+        back_to_menu_button = Button(60, (HEIGHT // 1.5 - (back_to_menu_img.get_height()) // 1.5 ), back_to_menu_img, 0.4)
+
+        replay_img = pygame.image.load('image/replay_buttonn.png')
+        replay_button = Button(50, (HEIGHT // 2 - (replay_img.get_height()) // 2 ), replay_img, 0.4)
+
+        while show_lost:
+                screen.fill(lost_color_bg)
+                screen.blit(lost_announcement, ((WIDTH // 2 - (lost_announcement.get_width()) // 2), 20))
+                screen.blit(lost_announcement_footer, ((WIDTH // 2 - (lost_announcement_footer.get_width()) // 2), 600))
+                back_to_menu_button.draw(screen)
+                replay_button.draw(screen)
+                pygame.display.flip()
+
+                x, y = pygame.mouse.get_pos()
+
+                for event in pygame.event.get():
+                        if event.type == pygame.QUIT:
+                                quit()
+                        '''
+                        if event.type == pygame.KEYDOWN:
+                                if event.key == pygame.K_q:
+                                        quit()
+                        '''
+                        if event.type == pygame.MOUSEBUTTONDOWN:
+                                if back_to_menu_button.rect.collidepoint(x, y):
+                                        show_lost = False
+                                        print('x')
+                                elif replay_button.rect.collidepoint(x, y):
+                                        global to_rungame
+                                        to_rungame = True
+                                        print('y')
+                                        show_lost = False
+
+#====================================================================
 
 def runGame():
 
@@ -218,11 +263,10 @@ def runGame():
     FPS = 60
     level = 3
     main_font = pygame.font.SysFont("Calibri", 50)
-    lost_font = pygame.font.SysFont("Calibri", 60)
 
     enemies = []
     wave_length = 2
-    enemy_speed = 0.6
+    enemy_speed = 10
     energy_circle_speed = 10
 
     player = Player(0, 0)
@@ -231,16 +275,8 @@ def runGame():
 
     clock = pygame.time.Clock()
 
-    lost = False
-    lost_screen_duration = 0
-
     def drawBoard():
         screen.blit(background, (0, 0))
-        if lost:
-            '''pygame.mixer.music.pause()'''
-            lost_label = lost_font.render("You loser:)", 1, (255,255,255))
-            screen.blit(lost_label, (WIDTH / 2 - lost_label.get_width() / 2, 350))
-            return
         nth_wave = main_font.render(f"Wave: {level - 3}", 1, (255,255,255))
         screen.blit(nth_wave, ((WIDTH - nth_wave.get_width()) / 2, 10))
         for enemy in enemies:
@@ -253,13 +289,6 @@ def runGame():
         clock.tick(FPS)
 
         drawBoard()
-
-        if lost:
-            lost_screen_duration += 1
-            if lost_screen_duration > FPS * 3:
-                break
-            else:
-                continue
 
 
         flag = True
@@ -316,10 +345,12 @@ def runGame():
             if enemy.health != 0:
                 enemy.move(player, enemy_speed)
             if isObjsCollision(enemy, player):
-                #Chỗ này thêm âm thanh và hiệu ứng nổ khi bị thua (enemy đụng trúng player)
+                music.soundEffect()
                 explosion(screen, (70, 163, 141), (player.x, player.y))
                 #player.is_alive = False
+                global lost
                 lost = True
+                return
             elif enemy.health == 0:
                 if enemy.shuttle_image != hidden_thing:
                     enemy.shuttle_image = hidden_thing
@@ -368,7 +399,7 @@ def menu():
     surface_setting = pygame.display.set_mode((WIDTH, HEIGHT))
 
     back_img = pygame.image.load('image/back_button.png')
-    back_setting_button = Button(270, 590, back_img, 0.3)
+    back_setting_button = Button(290, 590, back_img, 0.3)
 
     menu_setting_btn = pygame.image.load('image/setting_btn.png')
     setting_button = Button(360, 580, menu_setting_btn, 0.08)
@@ -379,7 +410,7 @@ def menu():
     color_credits = (54, 69, 79)
     surface_credits = pygame.display.set_mode((WIDTH, HEIGHT))
 
-    back_credits_button = Button(270, 590, back_img, 0.3)
+    back_credits_button = Button(290, 590, back_img, 0.3)
 
     menu_credits_btn = pygame.image.load('image/credit_button.png')
     credits_button = Button(102, 530, menu_credits_btn, 0.5)
@@ -400,8 +431,29 @@ def menu():
         #BLIT giao diện mở đầu ở đây
         #NEW GAME
         # QUIT
+
+        #lost screen
+        global lost
+        global to_rungame
+        while lost:
+                print('ccc')
+                showLost()
+                if to_rungame:
+                        to_rungame = False
+                        lost = False
+                        music.musicGame(menu_running, game_running)
+                        runGame()
+                else:
+                        menu_running = True
+                        music.musicGame(menu_running, False)
+                        lost = False
+                        print('bbb')
+
+        print('ddd')
+        print(menu_running)
         if (menu_running == True):
             pygame.display.set_caption("MAIN MENU")
+            print('aaa')
             screen.blit(menu_bg, (0,0))
             screen.blit(title_main_menu, (x_title, y_title))
             # screen.blit(main_menu, (0, 10))
@@ -436,13 +488,14 @@ def menu():
             screen.blit(credits_music, ((WIDTH // 2 - (credits_music.get_width()) // 2, 450)))
             screen.blit(credits_name, ((WIDTH // 2 - (credits_name.get_width()) // 2, 500)))
 
+        
         # if (paused == True):
         #     pass
         ############################
         pygame.display.update()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                main_running = False
+                quit()
 
             x, y = pygame.mouse.get_pos()
 
