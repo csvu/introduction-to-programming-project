@@ -229,11 +229,12 @@ def runGame():
     lost = False
     lost_screen_duration = 0
 
-    #==========Hien thi man hinh khi ban die==========
+    #==========Hien thi man hinh khi ban die - END GAME==========
     def showLost():
         show_lost = True
         lost_color_bg = (105,105,105)
         lost_announcement = font_8bits_title.render('Loser', False, (255, 255, 255,))
+        lost_announcement_footer = font_8bits.render('Con   cai   nit !!! :)', False, (255, 255, 255,))
 
         back_to_menu_img = pygame.image.load('image/back_to_menu_button.png')
         back_to_menu_button = Button(60, (HEIGHT // 1.5 - (back_to_menu_img.get_height()) // 1.5 ), back_to_menu_img, 0.4)
@@ -244,6 +245,7 @@ def runGame():
         while show_lost:
             screen.fill(lost_color_bg)
             screen.blit(lost_announcement, ((WIDTH // 2 - (lost_announcement.get_width()) // 2), 20))
+            screen.blit(lost_announcement_footer, ((WIDTH // 2 - (lost_announcement_footer.get_width()) // 2), 600))
             back_to_menu_button.draw(screen)
             replay_button.draw(screen)
             pygame.display.flip()
