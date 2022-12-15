@@ -217,7 +217,7 @@ def runGame():
 
     enemies = []
     wave_length = 2
-    enemy_speed = 10
+    enemy_speed = 0.6
     energy_circle_speed = 10
 
     player = Player(0, 0)
