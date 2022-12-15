@@ -1,5 +1,6 @@
 import pygame, math, os, time, random
 from sound import music #từ sound.py móc class music ra
+from numpy import log2, power #power tinh ban kinh hinh tron,
 
 
 pygame.init()
@@ -7,7 +8,12 @@ pygame.init()
 WIDTH, HEIGHT = 430, 650
 modern_grey = (42, 42, 42)
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("A mishmash")
+
+#===========Fonts 8Bits===========
+font_8bits_title_main_menu = pygame.font.Font("fonts/pixeboy-font/Pixeboy-z8XGD.ttf", 86)
+font_8bits = pygame.font.Font("fonts/pixeboy-font/Pixeboy-z8XGD.ttf", 32)
+font_8bits_title = pygame.font.Font("fonts/pixeboy-font/Pixeboy-z8XGD.ttf", 86)
+#=================================
 
 small_enemy = pygame.image.load(os.path.realpath("image/small_enemy2.png"))
 player_icon = pygame.image.load(os.path.realpath("image/player_icon2.png"))
@@ -19,10 +25,56 @@ background = pygame.image.load(os.path.realpath("image/background.png"))
 
 font = pygame.font.SysFont("Calibri", 20, True)
 
+#button class
+class Button():
+	def __init__(self, x, y, image, scale):
+		width = image.get_width()
+		height = image.get_height()
+		self.image = pygame.transform.scale(image, (int(width * scale), int(height * scale)))
+		self.rect = self.image.get_rect()
+		self.rect.topleft = (x, y)
+		self.clicked = False
+
+	def draw(self, surface):
+		action = False
+		#get mouse position
+		pos = pygame.mouse.get_pos()
+
+		#check mouseover and clicked conditions
+		if self.rect.collidepoint(pos):
+			if pygame.mouse.get_pressed()[0] == 1 and self.clicked == False:
+				self.clicked = True
+				action = True
+
+		if pygame.mouse.get_pressed()[0] == 0:
+			self.clicked = False
+
+		#draw button on screen
+		surface.blit(self.image, (self.rect.x, self.rect.y))
+
+		return action
+
+
 def isObjsCollision(obj1, obj2):
     offset_x = obj2.x - obj1.x
     offset_y = obj2.y - obj1.y
     return obj1.mask.overlap(obj2.mask, (offset_x, offset_y)) != None
+
+def explosion(screen, color, position):
+    Blast = []
+    for i in range(1, 6):
+        Blast.append(pygame.image.load("image/exp" + str(i) + ".png"))
+    print(len(Blast))
+
+    for i in range(1, 60, 1):
+        screen.blit(background, (0,0))
+        if (i < 25):
+            HalfWidth = int(Blast[int(i/5)].get_width()/2)
+            HalfHeight = Blast[int(i/5)].get_height()/2
+            screen.blit(Blast[int(i/5)], (position[0] - HalfWidth, int(position[1] - HalfHeight)))
+        pygame.draw.circle(screen, (70, 163, 141), position , int(power(i, 2.2)), int(4/3*log2(i)))
+        pygame.display.flip()
+        pygame.time.delay(50)
 
 class Bullet:
     def __init__(self, x, y, image, enemy):
@@ -120,11 +172,50 @@ class Enemy(Shuttle):
         self.x += unit_x * speed
         self.y += unit_y * speed
 
+<<<<<<< HEAD
+=======
+  
+#===========Pause Game==========
+
+def paused():
+    paused_game = True
+
+    color_paused = (237, 234, 222)
+
+    paused_title = font_8bits_title.render('Pausing', False, (0, 0, 0))
+    press_continue = font_8bits.render('Press Enter or Esc to continue...', False, (0, 0, 0))
+
+
+    back_img = pygame.image.load('image/back_button.png')
+    back_paused_button = Button(270, 590, back_img, 0.3)
+    
+    while paused_game:
+        screen.fill((color_paused))
+        screen.blit(paused_title, (WIDTH // 2 - (paused_title.get_width()) // 2, 20))
+        screen.blit(press_continue, ((WIDTH // 2 - (press_continue.get_width()) // 2, 550)))
+        back_paused_button.draw(screen)
+        pygame.display.flip()
+
+        x, y = pygame.mouse.get_pos()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                quit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN or event.key == pygame.K_ESCAPE:
+                    paused_game = False
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if back_paused_button.rect.collidepoint(x, y):
+                    paused_game = False
+                    menu()
+#=============================================================================
+>>>>>>> 4ffef1fa89bdd37ee103a688679709ec031b9b8a
 
 
 def runGame():
 
-    pygame.display.set_caption("Z-Type")
+    pygame.display.set_caption("A mishmash")
 
     current_enemy_index = 0
     running = True
@@ -160,6 +251,7 @@ def runGame():
             screen.blit(lost_label, (WIDTH / 2 - lost_label.get_width() / 2, 350))
         pygame.display.update()
 
+      
     while running:
         clock.tick(FPS)
 
@@ -191,6 +283,7 @@ def runGame():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 quit()
+            
             if event.type == pygame.KEYDOWN:
                 if current_enemy_index == 0:
                     for i in range(len(enemies)):
@@ -207,6 +300,10 @@ def runGame():
                                 enemies[current_enemy_index].color = None
                                 current_enemy_index = 0
                             break
+                #==========Nhan Nut Enter de Paused Game==========
+                if event.key == pygame.K_RETURN or event.key == pygame.K_ESCAPE: # Nhan vao Enter hoac Esc thi Paused Game
+                    paused()
+                #=================================================
                 else:
                     if event.key == ord(enemies[current_enemy_index].word[0]):
                         player.shoot(enemies[current_enemy_index])
@@ -220,47 +317,22 @@ def runGame():
                 enemy.move(player, enemy_speed)
             if isObjsCollision(enemy, player):
                 #Chỗ này thêm âm thanh và hiệu ứng nổ khi bị thua (enemy đụng trúng player)
-                
+                explosion(screen, (70, 163, 141), (player.x, player.y))
                 player.is_alive = False
             elif enemy.health == 0:
                 if enemy.shuttle_image != hidden_thing:
                     enemy.shuttle_image = hidden_thing
+<<<<<<< HEAD
         '''def image_draw(self, url, xLocal, yLocal, xImg, yImg):  # In ra người hình ảnh
+=======
+        '''def image_draw(self, url, xLocal, yLocal, xImg, yImg):   In ra người hình ảnh
+>>>>>>> 4ffef1fa89bdd37ee103a688679709ec031b9b8a
          PlanesImg = pygame.image.load(url)
          PlanesImg = pygame.transform.scale(
-            PlanesImg, (xImg, yImg))  # change size image
+            PlanesImg, (xImg, yImg))   change size image
         self.screen.blit(PlanesImg, (xLocal, yLocal))'''
 
         player.moveBullets(energy_circle_speed)
-
-#button class
-class Button():
-	def __init__(self, x, y, image, scale):
-		width = image.get_width()
-		height = image.get_height()
-		self.image = pygame.transform.scale(image, (int(width * scale), int(height * scale)))
-		self.rect = self.image.get_rect()
-		self.rect.topleft = (x, y)
-		self.clicked = False
-
-	def draw(self, surface):
-		action = False
-		#get mouse position
-		pos = pygame.mouse.get_pos()
-
-		#check mouseover and clicked conditions
-		if self.rect.collidepoint(pos):
-			if pygame.mouse.get_pressed()[0] == 1 and self.clicked == False:
-				self.clicked = True
-				action = True
-
-		if pygame.mouse.get_pressed()[0] == 0:
-			self.clicked = False
-
-		#draw button on screen
-		surface.blit(self.image, (self.rect.x, self.rect.y))
-
-		return action
 
 def menu():
     menu_running = True
@@ -270,25 +342,27 @@ def menu():
     menu_bg = pygame.image.load('image/menu_background.jfif')
     menu_bg = pygame.transform.scale(menu_bg, (WIDTH, HEIGHT))
 
-    main_menu = pygame.image.load('image/main_menu.png')
-    main_menu = pygame.transform.scale(main_menu, (430, 120))
+    # main_menu = pygame.image.load('image/main_menu.png')
+    # main_menu = pygame.transform.scale(main_menu, (430, 120))
 
     menu_start_btn = pygame.image.load('image/start_menu.png').convert_alpha()
-    # menu_start_btn = pygame.transform.scale(menu_start_btn, (280, 112))
+    
     menu_exit_btn = pygame.image.load('image/exit_menu.png').convert_alpha()
-    # menu_exit_btn = pygame.transform.scale(menu_exit_btn, (240, 110))
 
     start_button = Button(25, 300, menu_start_btn, 0.8)
     exit_button = Button(100, 430, menu_exit_btn, 0.6)
-
-    # welcome_img = pygame.image.load('image/welcome.png')
-    # welcome_img = Button(60, 255, welcome_img, 0.2)
 
     gura_img = pygame.image.load('image/gura_menu.png')
     gura_img = Button(240, 225, gura_img, 0.2)
     gura2_img = pygame.image.load('image/gura2_menu.png')
     gura2_img = Button(65, 450, gura2_img, 0.1)
 
+    title_main_menu = font_8bits_title_main_menu.render('A mishmash', False, (255, 192, 0))
+    title_width = title_main_menu.get_width()
+    title_height = title_main_menu.get_height()
+    x_title = WIDTH // 2 - title_width // 2
+    y_title = HEIGHT // 10 - title_height // 10
+    
     #==========SETTING==========
     setting_running = False
     check_settting_btn = False
@@ -313,6 +387,16 @@ def menu():
     menu_credits_btn = pygame.image.load('image/credit_button.png')
     credits_button = Button(102, 530, menu_credits_btn, 0.5)
 
+    credits_team = font_8bits_title.render('Nhom 3', False, (255, 192, 0))
+    credits_1= font_8bits.render('Ngo Van Khai: 22127174_Leader', False, (255, 255, 255))
+    credits_2= font_8bits.render('Dang Nguyen Vu: 22127461', False, (255, 255, 255))
+    credits_3= font_8bits.render('Le Thi Thanh Thuy: 22127411', False, (255, 255, 255))
+    credits_4= font_8bits.render('Tran Thi My Y: 22127468', False, (255, 255, 255))
+    credits_5= font_8bits.render('To Quoc Thanh: 22127388', False, (255, 255, 255))
+    credits_6= font_8bits.render('Thai Huyen Tung: 22127441', False, (255, 255, 255))
+    credits_music = font_8bits.render('Music:', False, (255, 192, 0))
+    credits_name = font_8bits.render('Nishiki Yasunori', False, (255, 255, 255))
+
     main_running = True
     while main_running:
         ############################
@@ -322,14 +406,14 @@ def menu():
         if (menu_running == True):
             pygame.display.set_caption("MAIN MENU")
             screen.blit(menu_bg, (0,0))
-            screen.blit(main_menu, (0, 10))
+            screen.blit(title_main_menu, (x_title, y_title))
+            # screen.blit(main_menu, (0, 10))
 
             start_button.draw(screen)
             exit_button.draw(screen)
             setting_button.draw(screen)
             credits_button.draw(screen)
 
-            # welcome_img.draw(screen)
             gura_img.draw(screen)
             gura2_img.draw(screen)
 
@@ -342,6 +426,21 @@ def menu():
             pygame.display.set_caption("CREDITS")
             surface_credits.fill(color_credits)
             back_credits_button.draw(screen)
+            
+            pygame.draw.rect(screen, (93, 63, 211), pygame.Rect((WIDTH // 2 - (credits_team.get_width()) // 2 - 12, 40, (credits_team.get_width()) + 20, 70)), 0, 10)
+
+            screen.blit(credits_team, ((WIDTH // 2 - (credits_team.get_width()) // 2, 50)))
+            screen.blit(credits_1, ((WIDTH // 2 - (credits_1.get_width()) // 2, 150)))
+            screen.blit(credits_2, ((WIDTH // 2 - (credits_2.get_width()) // 2, 200)))
+            screen.blit(credits_3, ((WIDTH // 2 - (credits_3.get_width()) // 2, 250)))
+            screen.blit(credits_4, ((WIDTH // 2 - (credits_4.get_width()) // 2, 300)))
+            screen.blit(credits_5, ((WIDTH // 2 - (credits_5.get_width()) // 2, 350)))
+            screen.blit(credits_6, ((WIDTH // 2 - (credits_6.get_width()) // 2, 400)))
+            screen.blit(credits_music, ((WIDTH // 2 - (credits_music.get_width()) // 2, 450)))
+            screen.blit(credits_name, ((WIDTH // 2 - (credits_name.get_width()) // 2, 500)))
+
+        # if (paused == True):
+        #     pass
         ############################
         pygame.display.update()
         for event in pygame.event.get():
@@ -361,7 +460,7 @@ def menu():
 
                     #thêm dòng if ấn vào nút QUIT thì pygame.quit()
                     if exit_button.rect.collidepoint(x, y):
-                        main_running = False
+                        quit()
 
                     if setting_button.rect.collidepoint(x, y):
                         check_settting_btn = True
