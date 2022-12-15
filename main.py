@@ -5,7 +5,11 @@ from sound import music #từ sound.py móc class music ra
 pygame.init()
 
 WIDTH, HEIGHT = 430, 650
+
+white = (255, 255, 255)
 modern_grey = (42, 42, 42)
+mustard_yellow = (255, 219, 88)
+
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
 #===========Fonts 8Bits===========
@@ -148,11 +152,12 @@ class Enemy(Shuttle):
         self.mask = pygame.mask.from_surface(self.shuttle_image)
         self.word = randomword
         self.health = len(self.word)
+        self.text_color = white
         self.color = modern_grey
 
     def draw(self):
         super().draw()
-        text = font.render(self.word, False, (255, 255, 255))
+        text = font.render(self.word, False, self.text_color)
         text_w, text_h = text.get_size()
         if self.color != None:
                 pygame.draw.rect(screen, modern_grey, pygame.Rect(self.x + self.getWidth() / 2 - text_w / 2 - 8, self.y - text_h - 8, text_w + 8, text_h + 8), 0, 3)
@@ -231,15 +236,16 @@ def runGame():
 
     def drawBoard():
         screen.blit(background, (0, 0))
+        if lost:
+            '''pygame.mixer.music.pause()'''
+            lost_label = lost_font.render("You loser:)", 1, (255,255,255))
+            screen.blit(lost_label, (WIDTH / 2 - lost_label.get_width() / 2, 350))
+            return
         nth_wave = main_font.render(f"Wave: {level - 3}", 1, (255,255,255))
         screen.blit(nth_wave, ((WIDTH - nth_wave.get_width()) / 2, 10))
         for enemy in enemies:
             enemy.draw()
         player.draw()
-        if lost:
-            '''pygame.mixer.music.pause()'''
-            lost_label = lost_font.render("You loser:)", 1, (255,255,255))
-            screen.blit(lost_label, (WIDTH / 2 - lost_label.get_width() / 2, 350))
         pygame.display.update()
 
       
@@ -248,28 +254,30 @@ def runGame():
 
         drawBoard()
 
-        if not player.is_alive:
-            lost = True
-            lost_screen_duration += 1
         if lost:
+            lost_screen_duration += 1
             if lost_screen_duration > FPS * 3:
                 break
             else:
                 continue
+
 
         flag = True
         for enemy in enemies:
             if (enemy.word != ""):
                 flag = False
                 break
+
+
         if flag:
             level += 1
             wave_length += 2
 
             for i in range(wave_length):
                 lines = open(os.path.realpath(f"word_list/{level}_chars/{chr(i + 97)}.txt")).read().splitlines()
-                enemy = Enemy(random.randrange(-100, WIDTH + 100), random.randrange(-200, -100), random.choice(lines))
+                enemy = Enemy(random.randrange(-250, WIDTH + 250), random.randrange(-250, -100), random.choice(lines))
                 enemies.append(enemy)
+
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -284,6 +292,7 @@ def runGame():
                             continue
                         if (event.key == ord(enemies[i].word[0])):
                             current_enemy_index = -1
+                            enemies[i].text_color = mustard_yellow
                             enemies.append(enemies.pop(i))
                             player.shoot(enemies[current_enemy_index])
                             enemies[current_enemy_index].word = enemies[current_enemy_index].word[1 : ]
@@ -291,10 +300,6 @@ def runGame():
                                 enemies[current_enemy_index].color = None
                                 current_enemy_index = 0
                             break
-                #==========Nhan Nut Enter de Paused Game==========
-                if event.key == pygame.K_RETURN or event.key == pygame.K_ESCAPE: # Nhan vao Enter hoac Esc thi Paused Game
-                    paused()
-                #=================================================
                 else:
                     if event.key == ord(enemies[current_enemy_index].word[0]):
                         player.shoot(enemies[current_enemy_index])
@@ -302,6 +307,10 @@ def runGame():
                         if enemies[current_enemy_index].word == "":
                             enemies[current_enemy_index].color = None
                             current_enemy_index = 0
+                #==========Nhan Nut Enter de Paused Game==========
+                if event.key == pygame.K_RETURN or event.key == pygame.K_ESCAPE: # Nhan vao Enter hoac Esc thi Paused Game
+                    paused()
+                #=================================================
 
         for enemy in enemies[:]:
             if enemy.health != 0:
@@ -309,7 +318,8 @@ def runGame():
             if isObjsCollision(enemy, player):
                 #Chỗ này thêm âm thanh và hiệu ứng nổ khi bị thua (enemy đụng trúng player)
                 explosion(screen, (70, 163, 141), (player.x, player.y))
-                player.is_alive = False
+                #player.is_alive = False
+                lost = True
             elif enemy.health == 0:
                 if enemy.shuttle_image != hidden_thing:
                     enemy.shuttle_image = hidden_thing
