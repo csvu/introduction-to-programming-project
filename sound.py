@@ -10,10 +10,10 @@ class music:
             pygame.mixer.music.load("music\M02.mp3")
             pygame.mixer.music.play(-1)
 
-    def soundEffect(playeris_alive = False):
+    def soundEffect():
         pygame.mixer.quit()
         pygame.init()
         pygame.mixer.init()
-        if playeris_alive == False:
+        if True:
             pygame.mixer.music.load("music\player_collision.mp3")
             pygame.mixer.music.play()
