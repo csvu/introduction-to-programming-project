@@ -5,6 +5,8 @@ from numpy import log2, power #power tinh ban kinh hinh tron,
 
 pygame.init()
 
+BLACK = (0,0,0)
+
 WIDTH, HEIGHT = 430, 650
 modern_grey = (42, 42, 42)
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -24,6 +26,46 @@ background = pygame.image.load(os.path.realpath("image/background.png"))
 
 
 font = pygame.font.SysFont("Calibri", 20, True)
+
+all_explosions = pygame.sprite.Group()
+
+
+explosion_anim = {}
+explosion_anim['lg'] = []
+explosion_anim['sm'] = []
+for i in range (2) :
+                    filename = 'explosion{}.png' .format(i)
+                    img = pygame.image.load (os.path.join("image", filename)).convert_alpha()
+                    img.set_colorkey (BLACK)
+                    img_lg = pygame.transform.scale (img, (75,75))
+                    explosion_anim ['lg'].append (img_lg)
+                    img_sm = pygame. transform.scale (img , (32,32))
+                    explosion_anim ['sm'].append (img_sm)
+
+class Explosion1 (pygame.sprite.Sprite):
+    def __init__(self, center, size) : 
+        pygame.sprite.Sprite.__init__(self)
+        self.size = size
+        self.image = explosion_anim [self.size][0]
+        self.rect = self.image.get_rect ()
+        self.rect.center = center
+        self.frame = 0
+        self.last_update = pygame.time.get_ticks()
+        self.frame_rate = 80
+
+    def update (self) :
+        now = pygame.time.get_ticks ()
+        if now - self.last_update > self.frame_rate:
+            self.last_update = now
+            self.frame += 1
+            if self.frame == len (explosion_anim[self.size]) :
+                self.kill()
+            else :
+                center = self.rect.center
+                self.image = explosion_anim [self.size][self.frame]
+                self.rect = self.image.get_rect()
+                self.rect.center = center
+          
 
 #button class
 class Button():
@@ -115,12 +157,14 @@ class Shuttle:
 
     def getHeight(self):
         return self.shuttle_image.get_height()
-
+     
+    
 
 class Player(Shuttle):
     def __init__(self, x, y):
         super().__init__(x, y)
         self.bullets = []
+        self.all_explosions = pygame.sprite.Group()
         self.cool_down_counter = 0
         self.shuttle_image = player_icon
         self.bullet_image = enery_circle
@@ -135,10 +179,18 @@ class Player(Shuttle):
         for bullet in self.bullets:
             bullet.move(speed)
             if bullet.isBulletCollision(bullet.chosen_enemy):
-                
+
+                expl = Explosion1 (((bullet.x - (bullet.image.get_width() / 2) + 40),(bullet.y - (bullet.image.get_height() / 2)+20)), 'sm')
+                #all_explosions.add(expl)
+                self.all_explosions.add(expl)
                 #chỗ này thêm âm thanh và hiệu ứng nổ khi đạn đụng trúng enemy
                 
                 bullet.chosen_enemy.health -= 1
+                if (bullet.chosen_enemy.health == 0):
+                    expl = Explosion1 (((bullet.x - (bullet.image.get_width() / 2) + 40),(bullet.y - (bullet.image.get_height() / 2))), 'lg')
+                    #all_explosions.add(expl)
+                    self.all_explosions.add(expl)
+
                 self.bullets.remove(bullet)
 
 
@@ -172,8 +224,6 @@ class Enemy(Shuttle):
         self.x += unit_x * speed
         self.y += unit_y * speed
 
-<<<<<<< HEAD
-=======
   
 #===========Pause Game==========
 
@@ -210,7 +260,7 @@ def paused():
                     paused_game = False
                     menu()
 #=============================================================================
->>>>>>> 4ffef1fa89bdd37ee103a688679709ec031b9b8a
+
 
 
 def runGame():
@@ -245,17 +295,24 @@ def runGame():
         for enemy in enemies:
             enemy.draw()
         player.draw()
+        player.all_explosions.draw(screen)
         if lost:
             '''pygame.mixer.music.pause()'''
             lost_label = lost_font.render("You loser:)", 1, (255,255,255))
             screen.blit(lost_label, (WIDTH / 2 - lost_label.get_width() / 2, 350))
         pygame.display.update()
-
+        
+        #def draw():
+        #    screen.blit(self.image,(self.x, self.y)) 
       
     while running:
+        
+
         clock.tick(FPS)
 
         drawBoard()
+
+        
 
         if not player.is_alive:
             lost = True
@@ -311,6 +368,7 @@ def runGame():
                         if enemies[current_enemy_index].word == "":
                             enemies[current_enemy_index].color = None
                             current_enemy_index = 0
+    
 
         for enemy in enemies[:]:
             if enemy.health != 0:
@@ -322,17 +380,20 @@ def runGame():
             elif enemy.health == 0:
                 if enemy.shuttle_image != hidden_thing:
                     enemy.shuttle_image = hidden_thing
-<<<<<<< HEAD
+                #chỗ này thêm âm thanh và hiệu ứng nổ khi đạn đụng trúng enemy
+                
+               
+               
+
         '''def image_draw(self, url, xLocal, yLocal, xImg, yImg):  # In ra người hình ảnh
-=======
-        '''def image_draw(self, url, xLocal, yLocal, xImg, yImg):   In ra người hình ảnh
->>>>>>> 4ffef1fa89bdd37ee103a688679709ec031b9b8a
          PlanesImg = pygame.image.load(url)
          PlanesImg = pygame.transform.scale(
             PlanesImg, (xImg, yImg))   change size image
         self.screen.blit(PlanesImg, (xLocal, yLocal))'''
 
         player.moveBullets(energy_circle_speed)
+        
+        player.all_explosions.update()
 
 def menu():
     menu_running = True
