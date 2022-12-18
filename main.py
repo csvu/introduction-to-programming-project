@@ -265,8 +265,51 @@ def paused():
                 if back_paused_button.rect.collidepoint(x, y):
                     paused_game = False
                     menu()
-#=============================================================================
 
+
+
+#==========Hien thi man hinh khi ban die - END GAME==========
+def showLost():
+        show_lost = True
+        lost_color_bg = (105,105,105)
+        lost_announcement = font_8bits_title.render('Loser', False, (255, 255, 255,))
+        lost_announcement_footer = font_8bits.render('Con   cai   nit !!! :)', False, (255, 255, 255,))
+
+        back_to_menu_img = pygame.image.load('image/back_to_menu_button.png')
+        back_to_menu_button = Button(60, (HEIGHT // 1.5 - (back_to_menu_img.get_height()) // 1.5 ), back_to_menu_img, 0.4)
+
+        replay_img = pygame.image.load('image/replay_buttonn.png')
+        replay_button = Button(50, (HEIGHT // 2 - (replay_img.get_height()) // 2 ), replay_img, 0.4)
+
+        while show_lost:
+                screen.fill(lost_color_bg)
+                screen.blit(lost_announcement, ((WIDTH // 2 - (lost_announcement.get_width()) // 2), 20))
+                screen.blit(lost_announcement_footer, ((WIDTH // 2 - (lost_announcement_footer.get_width()) // 2), 600))
+                back_to_menu_button.draw(screen)
+                replay_button.draw(screen)
+                pygame.display.flip()
+
+                x, y = pygame.mouse.get_pos()
+
+                for event in pygame.event.get():
+                        if event.type == pygame.QUIT:
+                                quit()
+                        '''
+                        if event.type == pygame.KEYDOWN:
+                                if event.key == pygame.K_q:
+                                        quit()
+                        '''
+                        if event.type == pygame.MOUSEBUTTONDOWN:
+                                if back_to_menu_button.rect.collidepoint(x, y):
+                                        show_lost = False
+                                        print('x')
+                                elif replay_button.rect.collidepoint(x, y):
+                                        global to_rungame
+                                        to_rungame = True
+                                        print('y')
+                                        show_lost = False
+
+#====================================================================
 
 def runGame():
 
@@ -280,7 +323,7 @@ def runGame():
 
     enemies = []
     wave_length = 2
-    enemy_speed = 0.8
+    enemy_speed = 10
     energy_circle_speed = 12
 
     player = Player(0, 0)
