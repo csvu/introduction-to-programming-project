@@ -323,13 +323,8 @@ def runGame():
 
     enemies = []
     wave_length = 2
-<<<<<<< HEAD
     enemy_speed = 0.6
     energy_circle_speed = 10
-=======
-    enemy_speed = 10
-    energy_circle_speed = 12
->>>>>>> cae728e5eee0dc31997aa8583c2b02f5d754666f
 
     player = Player(0, 0)
     player.x = WIDTH / 2 - player.getWidth() / 2
