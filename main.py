@@ -25,10 +25,10 @@ font_8bits_title = pygame.font.Font("fonts/pixeboy-font/Pixeboy-z8XGD.ttf", 86) 
 #=================================
 
 small_enemy = pygame.image.load(os.path.realpath("image/small_enemy3.png"))
-player_icon = pygame.image.load(os.path.realpath("image/player_icon2.png"))
-enery_circle = pygame.image.load(os.path.relpath("image/energy_circle2.png"))
+player_icon = pygame.image.load(os.path.realpath("image/small_enemy4.png"))
+enery_circle = pygame.image.load(os.path.relpath("image/energy_circle3.png"))
 hidden_thing = pygame.image.load(os.path.realpath("image/hidden_thing.png"))
-background = pygame.image.load(os.path.realpath("image/bg4.png"))
+background = pygame.image.load(os.path.realpath("image/background7.jpg"))
 
 
 
