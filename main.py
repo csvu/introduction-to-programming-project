@@ -28,9 +28,9 @@ font_8bits_title = pygame.font.Font("fonts/pixeboy-font/Pixeboy-z8XGD.ttf", 86) 
 boss_image = pygame.image.load(os.path.realpath("image/boss.png"))
 small_enemy = pygame.image.load(os.path.realpath("image/small_enemy3.png"))
 player_icon = pygame.image.load(os.path.realpath("image/player_icon2.png"))
-enery_circle = pygame.image.load(os.path.relpath("image/energy_circle2.png"))
+enery_circle = pygame.image.load(os.path.relpath("image/energy_circle3.png"))
 hidden_thing = pygame.image.load(os.path.realpath("image/hidden_thing.png"))
-background = pygame.image.load(os.path.realpath("image/background3.png"))
+background = pygame.image.load(os.path.realpath("image/background7.jpg"))
 
 
 
@@ -306,6 +306,7 @@ def showLost():
                                         show_lost = False
                                         print('x')
                                 elif replay_button.rect.collidepoint(x, y):
+                                        #Dành cho Tùng
                                         global to_rungame
                                         to_rungame = True
                                         print('y')
@@ -541,6 +542,7 @@ def menu():
         # QUIT
 
         #lost screen
+        #Dành cho Tùng 
         global lost
         global to_rungame
         while lost:
@@ -556,7 +558,7 @@ def menu():
                         music.musicGame(menu_running, False)
                         lost = False
                         print('bbb')
-
+        #Dành cho Tùng
         print('ddd')
         print(menu_running)
         if (menu_running == True):
