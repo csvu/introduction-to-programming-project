@@ -11,6 +11,7 @@ WIDTH, HEIGHT = 430, 650
 
 lost = False
 to_rungame = False
+win = False
 
 white = (255, 255, 255)
 modern_grey = (42, 42, 42)
@@ -24,11 +25,12 @@ font_8bits = pygame.font.Font("fonts/pixeboy-font/Pixeboy-z8XGD.ttf", 32) # dàn
 font_8bits_title = pygame.font.Font("fonts/pixeboy-font/Pixeboy-z8XGD.ttf", 86) # dành cho cỡ chữ credits và paused
 #=================================
 
+boss_image = pygame.image.load(os.path.realpath("image/boss.png"))
 small_enemy = pygame.image.load(os.path.realpath("image/small_enemy3.png"))
 player_icon = pygame.image.load(os.path.realpath("image/player_icon2.png"))
 enery_circle = pygame.image.load(os.path.relpath("image/energy_circle2.png"))
 hidden_thing = pygame.image.load(os.path.realpath("image/hidden_thing.png"))
-background = pygame.image.load(os.path.realpath("image/bg4.png"))
+background = pygame.image.load(os.path.realpath("image/background3.png"))
 
 
 
@@ -323,27 +325,35 @@ def runGame():
 
     enemies = []
     wave_length = 2
+    boss_speed = 0.2
     enemy_speed = 0.6
     energy_circle_speed = 10
 
     player = Player(0, 0)
     player.x = WIDTH / 2 - player.getWidth() / 2
-    player.y = HEIGHT - player.getHeight()
+    player.y = HEIGHT - player.getHeight() - 10
+    boss = Enemy(WIDTH / 2 - boss_image.get_width() / 2, boss_image.get_height() + 10, "IVeryLov3Ron@ld0&YoU")
+    boss_live = 0
+    boss.shuttle_image = boss_image
 
     clock = pygame.time.Clock()
 
     def drawBoard():
         screen.blit(background, (0, 0))
-        nth_wave = main_font.render(f"Wave: {level - 3}", 1, (255,255,255))
+        nth_wave = font_8bits.render(f"Wave: {level - 3}", 1, (255,255,255))
         screen.blit(nth_wave, ((WIDTH - nth_wave.get_width()) / 2, 10))
         for enemy in enemies:
             enemy.draw()
         player.draw()
+        if level == 9:
+                boss.draw()
         player.all_explosions.draw(screen)
+        '''
         if lost:
-            '''pygame.mixer.music.pause()'''
+            pygame.mixer.music.pause()
             lost_label = lost_font.render("You loser:)", 1, (255,255,255))
             screen.blit(lost_label, (WIDTH / 2 - lost_label.get_width() / 2, 350))
+        '''
         pygame.display.update()
         
         #def draw():
@@ -356,9 +366,6 @@ def runGame():
 
         drawBoard()
 
-        
-
-
         flag = True
         for enemy in enemies:
             if (enemy.word != ""):
@@ -367,12 +374,17 @@ def runGame():
 
 
         if flag:
-            level += 1
-            wave_length += 2
+            if (level != 9):
+                level += 1
+            wave_length += 1
+            if (level == 8):
+                level += 1
+                wave_length = 2
 
+        
             for i in range(wave_length):
                 lines = open(os.path.realpath(f"word_list/{level}_chars/{chr(i + 97)}.txt")).read().splitlines()
-                enemy = Enemy(random.randrange(-250, WIDTH + 250), random.randrange(-250, -100), random.choice(lines))
+                enemy = Enemy(2 * i * small_enemy.get_width() - 100, random.randrange(-150, -100), random.choice(lines))
                 enemies.append(enemy)
 
 
@@ -381,13 +393,18 @@ def runGame():
                 quit()
             
             if event.type == pygame.KEYDOWN:
+                print (event)
+                if (level == 9 and boss.word != ""):
+                        if (event.unicode == boss.word[0]):
+                                player.shoot(boss)
+                                boss.word = boss.word[1 : ]
                 if current_enemy_index == 0:
                     for i in range(len(enemies)):
                         if i >= len(enemies):
                             continue
                         if enemies[i].word == "":
                             continue
-                        if (event.key == ord(enemies[i].word[0])):
+                        if (event.key == ord(enemies[i].word[0]) and 0 <= enemies[i].x <= WIDTH and 0 <= enemies[i].y <= HEIGHT):
                             current_enemy_index = -1
                             enemies[i].text_color = mustard_yellow
                             enemies.append(enemies.pop(i))
@@ -404,7 +421,18 @@ def runGame():
                         if enemies[current_enemy_index].word == "":
                             enemies[current_enemy_index].color = None
                             current_enemy_index = 0
-    
+                if event.key == pygame.K_RETURN or event.key == pygame.K_ESCAPE: # Nhan vao Enter hoac Esc thi Paused Game
+                        paused() 
+
+        global lost
+        if (level == 9):
+                boss.move(player, boss_speed)
+        if isObjsCollision(boss, player):
+                music.soundEffect()
+                explosion(screen, (100, 500, 500), (player.x, player.y))
+                #player.is_alive = False
+                lost = True
+                return
 
         for enemy in enemies[:]:
             if enemy.health != 0:
@@ -413,7 +441,6 @@ def runGame():
                 music.soundEffect()
                 explosion(screen, (100, 500, 500), (player.x, player.y))
                 #player.is_alive = False
-                global lost
                 lost = True
                 return
             elif enemy.health == 0:
@@ -433,6 +460,15 @@ def runGame():
         player.moveBullets(energy_circle_speed)
         
         player.all_explosions.update()
+        if (boss.health == 0):
+                if boss_live == 1:
+                        global win
+                        win = True
+                        return
+                else:
+                        boss_live += 1
+                        boss.word = "!)@(#*$&%^!)@(#*$&%^!)@(#*$&%^" 
+                        boss.health = len(boss.word)
 
 def menu():
     menu_running = True
