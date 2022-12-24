@@ -11,8 +11,8 @@ WIDTH, HEIGHT = 430, 650
 
 lost = False
 to_rungame = False
-# win = False
-win = True
+win = False   
+duration = 0
 
 white = (255, 255, 255)
 modern_grey = (42, 42, 42)
@@ -22,6 +22,7 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
 #===========Fonts 8Bits===========
 font_8bits_title_main_menu = pygame.font.Font("fonts/pixeboy-font/Pixeboy-z8XGD.ttf", 86) # dành cho cỡ chữ như main menu
+font_8bits_small = pygame.font.Font("fonts/pixeboy-font/Pixeboy-z8XGD.ttf", 24) # dành cho cỡ chữ small
 font_8bits = pygame.font.Font("fonts/pixeboy-font/Pixeboy-z8XGD.ttf", 32) # dành cho cỡ chữ thường
 font_8bits_medium = pygame.font.Font("fonts/pixeboy-font/Pixeboy-z8XGD.ttf", 48) # dành cho cỡ chữ medium
 font_8bits_title = pygame.font.Font("fonts/pixeboy-font/Pixeboy-z8XGD.ttf", 86) # dành cho cỡ chữ credits và paused
@@ -320,10 +321,24 @@ def showLost():
 #==========Hien thi man hinh khi ban thang - WINWIN GAME==========
 def showWin():
         show_win = True
+
+        #===========================My Gura===========================
+
+        gura1_win_img = pygame.image.load('image/gura1_winwin.png')
+        gura1_win_img = Button(50, 300, gura1_win_img, 0.2)
+
+        gura2_win_img = pygame.image.load('image/gura2_winwin.png')
+        gura2_win_img = Button(280, 500, gura2_win_img, 0.2)
+
+        gura3_win_img = pygame.image.load('image/gura3_winwin.png')
+        gura3_win_img = Button(170, 170, gura3_win_img, 0.3)
+
+        #===============================================================
+
         win_color_bg = (250,160,160)
         win_announcement = font_8bits_medium.render('You have proved', False, (0, 0, 0,))
-        win_sub_announcement = font_8bits_medium.render('You were not a Loser', False, (0, 0, 0,))
-        win_announcement_footer = font_8bits_medium.render('Congratulations !!!', False, (0, 0, 0,))
+        win_sub_announcement = font_8bits_medium.render('You are not a Loser', False, (0, 0, 0,))
+        win_announcement_footer = font_8bits.render('Congratulations !!!', False, (0, 0, 0,))
 
         back_to_menu_img = pygame.image.load('image/back_to_menu_button.png')
         back_to_menu_button = Button(60, (HEIGHT // 1 - (back_to_menu_img.get_height()) // 1 ), back_to_menu_img, 0.4)
@@ -331,13 +346,23 @@ def showWin():
         replay_img = pygame.image.load('image/replay_buttonn.png')
         replay_button = Button(50, (HEIGHT // 1.1 - (replay_img.get_height()) // 1.1 ), replay_img, 0.4)
 
+        #=====DURATION=====
+        show_duration_announcement = font_8bits_small.render('You beat this game in ' + str(duration) + ' seconds', False, (0,0,0))
+        #==================
+
         while show_win:
                 screen.fill(win_color_bg)
+
+                gura1_win_img.draw(screen)
+                gura3_win_img.draw(screen)
+
                 screen.blit(win_announcement, ((WIDTH // 2 - (win_announcement.get_width()) // 2), 30))
                 screen.blit(win_sub_announcement, ((WIDTH // 2 - (win_sub_announcement.get_width()) // 2), 80))
-                screen.blit(win_announcement_footer, ((WIDTH // 2 - (win_announcement_footer.get_width()) // 2), 600))
                 back_to_menu_button.draw(screen)
                 replay_button.draw(screen)
+                gura2_win_img.draw(screen)
+                screen.blit(win_announcement_footer, ((WIDTH // 2 - (win_announcement_footer.get_width()) // 2), 600))
+                screen.blit(show_duration_announcement, ((WIDTH // 2 - (show_duration_announcement.get_width()) // 2), 170))
                 pygame.display.flip()
 
                 x, y = pygame.mouse.get_pos()
@@ -377,7 +402,7 @@ def runGame():
     enemies = []
     wave_length = 2
     boss_speed = 0.2
-    enemy_speed = 0.2
+    enemy_speed = 0.6
     energy_circle_speed = 10
 
     player = Player(0, 0)
@@ -387,6 +412,7 @@ def runGame():
     boss_live = 0
     boss.shuttle_image = boss_image
 
+    start = pygame.time.get_ticks()
     clock = pygame.time.Clock()
 
     def drawBoard():
@@ -445,7 +471,7 @@ def runGame():
             
             if event.type == pygame.KEYDOWN:
                 print (event)
-                if (level == 9 and boss.word != ""):
+                if (level == 9 and boss.word != "" and current_enemy_index == 0):
                         if (event.unicode == boss.word[0]):
                                 player.shoot(boss)
                                 boss.word = boss.word[1 : ]
@@ -515,6 +541,9 @@ def runGame():
                 if boss_live == 1:
                         global win
                         win = True
+                        global duration
+                        duration = (pygame.time.get_ticks() - start) // 1000
+                        print(duration)
                         return
                 else:
                         boss_live += 1
@@ -612,11 +641,10 @@ def menu():
 
         global win
         while win:
-            showWin();
+            showWin()
 
-
-        print('ddd')
-        print(menu_running)
+        #print('ddd')
+        #print(menu_running)
         if (menu_running == True):
             pygame.display.set_caption("MAIN MENU")
             print('aaa')
