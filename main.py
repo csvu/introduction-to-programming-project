@@ -199,6 +199,7 @@ class Player(Shuttle):
                     expl = Explosion1 (((bullet.x - (bullet.image.get_width() / 2) + 40),(bullet.y - (bullet.image.get_height() / 2))), 'lg')
                     #all_explosions.add(expl)
                     self.all_explosions.add(expl)
+                    music.soundEffect(enemy_explosion = True)
 
                 self.bullets.remove(bullet)
 
@@ -401,8 +402,8 @@ def runGame():
     enemies = []
     wave_length = 2
     boss_speed = 0.2
-    enemy_speed = 0.6
-    energy_circle_speed = 10
+    enemy_speed = 10
+    energy_circle_speed = 0.6
 
     player = Player(0, 0)
     player.x = WIDTH / 2 - player.getWidth() / 2
@@ -481,8 +482,7 @@ def runGame():
                         if enemies[i].word == "":
                             continue
                         if (event.key == ord(enemies[i].word[0]) and 0 <= enemies[i].x <= WIDTH and 0 <= enemies[i].y <= HEIGHT):
-                            shot_sound = pygame.mixer.Sound("music\player_shot.mp3")
-                            shot_sound.play()
+                            music.soundEffect(player_shooting = True)
                             current_enemy_index = -1
                             enemies[i].text_color = mustard_yellow
                             enemies.append(enemies.pop(i))
@@ -494,8 +494,7 @@ def runGame():
                             break
                 else:
                     if event.key == ord(enemies[current_enemy_index].word[0]):
-                        shot_sound = pygame.mixer.Sound("music\player_shot.mp3")
-                        shot_sound.play()
+                        music.soundEffect(player_shooting = True)
                         player.shoot(enemies[current_enemy_index])
                         enemies[current_enemy_index].word = enemies[current_enemy_index].word[1 : ]
                         if enemies[current_enemy_index].word == "":
