@@ -1,13 +1,15 @@
 import pygame
 
 class music:
-    def musicGame(menu_running = False, game_running = False):
+    def musicGame(menu_running = False, game_run = False, show_lost = False):
         pygame.mixer.quit()
         pygame.mixer.init()
         if menu_running == True:
             background_music = pygame.mixer.Sound("music\M01.mp3")
-        if game_running == True:
+        if game_run == True:
             background_music = pygame.mixer.Sound("music\M02.mp3")
+        if show_lost == True:
+            background_music = pygame.mixer.Sound("music\M04.mp3")
         background_music.play(-1) #lặp nhạc nền vô số lần
         background_music.set_volume(0.7)
 

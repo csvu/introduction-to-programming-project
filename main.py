@@ -279,6 +279,8 @@ def showLost():
         lost_color_bg = (105,105,105)
         lost_announcement = font_8bits_title.render('Loser', False, (255, 255, 255,))
 
+        music.musicGame(show_lost = True)
+
         back_to_menu_img = pygame.image.load('image/back_to_menu_button.png')
         back_to_menu_button = Button(60, (HEIGHT // 1.5 - (back_to_menu_img.get_height()) // 1.5 ), back_to_menu_img, 0.4)
 
@@ -378,8 +380,8 @@ def runGame():
     enemies = []
     wave_length = 2
     boss_speed = 0.2
-    enemy_speed = 10
-    energy_circle_speed = 0.6
+    enemy_speed = 0.6
+    energy_circle_speed = 10
 
     player = Player(0, 0)
     player.x = WIDTH / 2 - player.getWidth() / 2
@@ -608,11 +610,11 @@ def menu():
                 if to_rungame:
                         to_rungame = False
                         lost = False
-                        music.musicGame(menu_running = False, game_running = False)
+                        music.musicGame(game_run = True)
                         runGame()
                 else:
                         menu_running = True
-                        music.musicGame(menu_running = True)
+                        music.musicGame(menu_run = True)
                         lost = False
                         print('bbb')
         #Dành cho Tùng
@@ -623,11 +625,11 @@ def menu():
                 if to_rungame:
                         to_rungame = False
                         win = False
-                        music.musicGame(menu_running, game_running)
+                        music.musicGame(game_run = True)
                         runGame()
                 else:
                         menu_running = True
-                        music.musicGame(menu_running, False)
+                        music.musicGame(game_run = True)
                         win = False
                         print('bbb')
 
@@ -688,7 +690,7 @@ def menu():
                     if start_button.rect.collidepoint(x, y):
                         menu_running = False
                         game_running = True #đánh dấu đã thoát menu, vào game chơi
-                        music.musicGame(game_running = True)
+                        music.musicGame(game_run = True)
                         runGame()
 
                     #thêm dòng if ấn vào nút QUIT thì pygame.quit()
