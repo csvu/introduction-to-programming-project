@@ -12,6 +12,7 @@ WIDTH, HEIGHT = 430, 650
 lost = False
 to_rungame = False
 win = False
+duration = 0
 
 white = (255, 255, 255)
 modern_grey = (42, 42, 42)
@@ -337,6 +338,7 @@ def runGame():
     boss_live = 0
     boss.shuttle_image = boss_image
 
+    start = pygame.time.get_ticks()
     clock = pygame.time.Clock()
 
     def drawBoard():
@@ -395,7 +397,7 @@ def runGame():
             
             if event.type == pygame.KEYDOWN:
                 print (event)
-                if (level == 9 and boss.word != ""):
+                if (level == 9 and boss.word != "" and current_enemy_index == 0):
                         if (event.unicode == boss.word[0]):
                                 player.shoot(boss)
                                 boss.word = boss.word[1 : ]
@@ -465,6 +467,9 @@ def runGame():
                 if boss_live == 1:
                         global win
                         win = True
+                        global duration
+                        duration = (pygame.time.get_ticks() - start) // 1000
+                        print(duration)
                         return
                 else:
                         boss_live += 1
@@ -559,8 +564,8 @@ def menu():
                         lost = False
                         print('bbb')
         #Dành cho Tùng
-        print('ddd')
-        print(menu_running)
+        #print('ddd')
+        #print(menu_running)
         if (menu_running == True):
             pygame.display.set_caption("MAIN MENU")
             print('aaa')
