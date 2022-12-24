@@ -10,7 +10,7 @@ WIDTH, HEIGHT = 430, 650
 
 lost = False
 to_rungame = False
-win = False   
+win = True
 duration = 0
 
 white = (255, 255, 255)
@@ -278,7 +278,6 @@ def showLost():
         show_lost = True
         lost_color_bg = (105,105,105)
         lost_announcement = font_8bits_title.render('Loser', False, (255, 255, 255,))
-        lost_announcement_footer = font_8bits.render('Con   cai   nit !!! :)', False, (255, 255, 255,))
 
         back_to_menu_img = pygame.image.load('image/back_to_menu_button.png')
         back_to_menu_button = Button(60, (HEIGHT // 1.5 - (back_to_menu_img.get_height()) // 1.5 ), back_to_menu_img, 0.4)
@@ -289,7 +288,6 @@ def showLost():
         while show_lost:
                 screen.fill(lost_color_bg)
                 screen.blit(lost_announcement, ((WIDTH // 2 - (lost_announcement.get_width()) // 2), 20))
-                screen.blit(lost_announcement_footer, ((WIDTH // 2 - (lost_announcement_footer.get_width()) // 2), 600))
                 back_to_menu_button.draw(screen)
                 replay_button.draw(screen)
                 pygame.display.flip()
@@ -322,28 +320,27 @@ def showLost():
 def showWin():
         show_win = True
 
-        win_color_bg = (250,160,160)
-        win_announcement = font_8bits_medium.render('You have proved', False, (0, 0, 0,))
-        win_sub_announcement = font_8bits_medium.render('You are not a Loser', False, (0, 0, 0,))
-        win_announcement_footer = font_8bits.render('Congratulations !!!', False, (0, 0, 0,))
+        bg_win = pygame.image.load('./image/bg_win.jpg')
+        bg_win = pygame.transform.scale(bg_win,(WIDTH, HEIGHT))
+        win_announcement = font_8bits_title.render('Congrats !', False, (255, 192, 0))
+
+        replay_img = pygame.image.load('image/replay_buttonn.png')
+        replay_button = Button(50, (HEIGHT // 1.2 - (replay_img.get_height()) // 1.2 ), replay_img, 0.4)
 
         back_to_menu_img = pygame.image.load('image/back_to_menu_button.png')
         back_to_menu_button = Button(60, (HEIGHT // 1 - (back_to_menu_img.get_height()) // 1 ), back_to_menu_img, 0.4)
 
-        replay_img = pygame.image.load('image/replay_buttonn.png')
-        replay_button = Button(50, (HEIGHT // 1.1 - (replay_img.get_height()) // 1.1 ), replay_img, 0.4)
-
         #=====DURATION=====
-        show_duration_announcement = font_8bits_small.render('You beat this game in ' + str(duration) + ' seconds', False, (0,0,0))
+        show_duration_announcement = font_8bits.render('You beat this game', False, (255,255,255))
+        show_duration_announcement2 = font_8bits.render('in ' + str(duration) + ' seconds', False, (255,255,255))
         #==================
 
         while show_win:
-                screen.fill(win_color_bg)
-
-                screen.blit(win_announcement, ((WIDTH // 2 - (win_announcement.get_width()) // 2), 30))
-                screen.blit(win_sub_announcement, ((WIDTH // 2 - (win_sub_announcement.get_width()) // 2), 80))
-                screen.blit(win_announcement_footer, ((WIDTH // 2 - (win_announcement_footer.get_width()) // 2), 600))
-                screen.blit(show_duration_announcement, ((WIDTH // 2 - (show_duration_announcement.get_width()) // 2), 170))
+                pygame.display.set_caption('WIN')
+                screen.blit(bg_win,(0,0))
+                screen.blit(win_announcement, ((WIDTH // 2 - (win_announcement.get_width()) // 2), 50))
+                screen.blit(show_duration_announcement, ((WIDTH // 2 - (show_duration_announcement.get_width()) // 2), 200))
+                screen.blit(show_duration_announcement2, ((WIDTH // 2 - (show_duration_announcement2.get_width()) // 2), 250))
                 back_to_menu_button.draw(screen)
                 replay_button.draw(screen)
                 pygame.display.flip()
@@ -353,11 +350,7 @@ def showWin():
                 for event in pygame.event.get():
                         if event.type == pygame.QUIT:
                                 quit()
-                        '''
-                        if event.type == pygame.KEYDOWN:
-                                if event.key == pygame.K_q:
-                                        quit()
-                        '''
+                        
                         if event.type == pygame.MOUSEBUTTONDOWN:
                                 if back_to_menu_button.rect.collidepoint(x, y):
                                         show_win = False
