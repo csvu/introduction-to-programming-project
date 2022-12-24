@@ -644,7 +644,18 @@ def menu():
 
         global win
         while win:
-            showWin()
+                showWin()
+                if to_rungame:
+                        to_rungame = False
+                        win = False
+                        music.musicGame(menu_running, game_running)
+                        runGame()
+                else:
+                        menu_running = True
+                        music.musicGame(menu_running, False)
+                        win = False
+                        print('bbb')
+
 
         #print('ddd')
         #print(menu_running)
