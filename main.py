@@ -326,6 +326,8 @@ def showWin():
         bg_win = pygame.transform.scale(bg_win,(WIDTH, HEIGHT))
         win_announcement = font_8bits_title.render('Congrats !', False, (255, 192, 0))
 
+        music.musicGame(show_win = True)
+
         replay_img = pygame.image.load('image/replay_buttonn.png')
         replay_button = Button(50, (HEIGHT // 1.2 - (replay_img.get_height()) // 1.2 ), replay_img, 0.4)
 
@@ -470,6 +472,8 @@ def runGame():
                                 enemies[current_enemy_index].color = None
                                 current_enemy_index = 0
                             break
+                        '''elif ( event.key != ord(enemies[i].word[0])):
+                            music.soundEffect(player_type_wrong = True)'''
                 else:
                     if event.key == ord(enemies[current_enemy_index].word[0]):
                         music.soundEffect(player_shooting = True)
@@ -478,6 +482,8 @@ def runGame():
                         if enemies[current_enemy_index].word == "":
                             enemies[current_enemy_index].color = None
                             current_enemy_index = 0
+                    '''elif event.key == ord(enemies[current_enemy_index].word[0]):
+                        music.soundEffect(player_type_wrong = True)'''
                 if event.key == pygame.K_RETURN or event.key == pygame.K_ESCAPE: # Nhan vao Enter hoac Esc thi Paused Game
                         paused() 
 
@@ -614,7 +620,7 @@ def menu():
                         runGame()
                 else:
                         menu_running = True
-                        music.musicGame(menu_run = True)
+                        music.musicGame(game_run = True)
                         lost = False
                         print('bbb')
         #Dành cho Tùng
