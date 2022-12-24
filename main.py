@@ -30,7 +30,7 @@ small_enemy = pygame.image.load(os.path.realpath("image/small_enemy3.png"))
 player_icon = pygame.image.load(os.path.realpath("image/player_icon2.png"))
 enery_circle = pygame.image.load(os.path.relpath("image/energy_circle3.png"))
 hidden_thing = pygame.image.load(os.path.realpath("image/hidden_thing.png"))
-background = pygame.image.load(os.path.realpath("image/background7.jpg"))
+background = pygame.image.load(os.path.realpath("image/background7.png"))
 
 
 
@@ -468,7 +468,7 @@ def runGame():
                         return
                 else:
                         boss_live += 1
-                        boss.word = "!)@(#*$&%^!)@(#*$&%^!)@(#*$&%^" 
+                        boss.word = "ABCDEFG" 
                         boss.health = len(boss.word)
 
 def menu():
