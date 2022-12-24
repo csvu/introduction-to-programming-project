@@ -224,9 +224,9 @@ class Enemy(Shuttle):
         text = font.render(self.word, False, self.text_color)
         text_w, text_h = text.get_size()
         if self.color != None:
-                pygame.draw.rect(screen, modern_grey, pygame.Rect(self.x + self.getWidth() / 2 - text_w / 2 - 8, self.y - text_h - 8, text_w + 8, text_h + 8), 0, 3)
+                pygame.draw.rect(screen, modern_grey, pygame.Rect(self.x + self.getWidth() / 2 - text_w / 2 - 4, self.y + self.getHeight() - 4, text_w + 8, text_h + 8), 0, 3)
         if self.health != 0:
-                screen.blit(text, (self.x + self.getWidth() / 2 - text_w / 2, self.y - text_h))
+                screen.blit(text, (self.x + self.getWidth() / 2 - text_w / 2, self.y + self.getHeight()))
 
     def move(self, player, speed):
         unit_x, unit_y = player.x - self.x, player.y - self.y
@@ -408,7 +408,7 @@ def runGame():
     player = Player(0, 0)
     player.x = WIDTH / 2 - player.getWidth() / 2
     player.y = HEIGHT - player.getHeight() - 10
-    boss = Enemy(WIDTH / 2 - boss_image.get_width() / 2, boss_image.get_height() + 10, "IVeryLov3Ron@ld0&YoU")
+    boss = Enemy(WIDTH / 2 - boss_image.get_width() / 2, -boss_image.get_height() - 10, "IVeryLov3Ron@ld0&YoU")
     boss_live = 0
     boss.shuttle_image = boss_image
 
@@ -417,8 +417,6 @@ def runGame():
 
     def drawBoard():
         screen.blit(background, (0, 0))
-        nth_wave = font_8bits.render(f"Wave: {level - 3}", 1, (255,255,255))
-        screen.blit(nth_wave, ((WIDTH - nth_wave.get_width()) / 2, 10))
         for enemy in enemies:
             enemy.draw()
         player.draw()
@@ -431,6 +429,8 @@ def runGame():
             lost_label = lost_font.render("You loser:)", 1, (255,255,255))
             screen.blit(lost_label, (WIDTH / 2 - lost_label.get_width() / 2, 350))
         '''
+        nth_wave = font_8bits.render(f"Wave: {level - 3}", 1, (255,255,255))
+        screen.blit(nth_wave, ((WIDTH - nth_wave.get_width()) / 2, 10))
         pygame.display.update()
         
         #def draw():
@@ -481,7 +481,7 @@ def runGame():
                             continue
                         if enemies[i].word == "":
                             continue
-                        if (event.key == ord(enemies[i].word[0]) and 0 <= enemies[i].x <= WIDTH and 0 <= enemies[i].y <= HEIGHT):
+                        if (event.key == ord(enemies[i].word[0]) and 0 <= enemies[i].x <= WIDTH):
                             current_enemy_index = -1
                             enemies[i].text_color = mustard_yellow
                             enemies.append(enemies.pop(i))
