@@ -28,8 +28,8 @@ font_8bits_title = pygame.font.Font("fonts/pixeboy-font/Pixeboy-z8XGD.ttf", 86) 
 #=================================
 
 boss_image = pygame.image.load(os.path.realpath("image/boss.png"))
-small_enemy = pygame.image.load(os.path.realpath("image/small_enemy3.png"))
-player_icon = pygame.image.load(os.path.realpath("image/player_icon2.png"))
+small_enemy = pygame.image.load(os.path.realpath("image/small_enemy5.png"))
+player_icon = pygame.image.load(os.path.realpath("image/player_icon.png"))
 enery_circle = pygame.image.load(os.path.relpath("image/energy_circle3.png"))
 hidden_thing = pygame.image.load(os.path.realpath("image/hidden_thing.png"))
 background = pygame.image.load(os.path.realpath("image/background7.png"))
@@ -183,7 +183,7 @@ class Player(Shuttle):
         self.is_alive = True
 
     def shoot(self, enemy):
-            bullet = Bullet(self.x, self.y, self.bullet_image, enemy)
+            bullet = Bullet(WIDTH / 2 - self.bullet_image.get_width() / 2, self.y, self.bullet_image, enemy)
             self.bullets.append(bullet)
 
     def moveBullets(self, speed):
@@ -224,9 +224,9 @@ class Enemy(Shuttle):
         text = font.render(self.word, False, self.text_color)
         text_w, text_h = text.get_size()
         if self.color != None:
-                pygame.draw.rect(screen, modern_grey, pygame.Rect(self.x + self.getWidth() / 2 - text_w / 2 - 8, self.y - text_h - 8, text_w + 8, text_h + 8), 0, 3)
+                pygame.draw.rect(screen, modern_grey, pygame.Rect(self.x + self.getWidth() / 2 - text_w / 2 - 4, self.y + self.getHeight() - 4, text_w + 8, text_h + 8), 0, 3)
         if self.health != 0:
-                screen.blit(text, (self.x + self.getWidth() / 2 - text_w / 2, self.y - text_h))
+                screen.blit(text, (self.x + self.getWidth() / 2 - text_w / 2, self.y + self.getHeight()))
 
     def move(self, player, speed):
         unit_x, unit_y = player.x - self.x, player.y - self.y
@@ -381,12 +381,12 @@ def runGame():
     wave_length = 2
     boss_speed = 0.2
     enemy_speed = 0.6
-    energy_circle_speed = 10
+    energy_circle_speed = 15
 
     player = Player(0, 0)
     player.x = WIDTH / 2 - player.getWidth() / 2
     player.y = HEIGHT - player.getHeight() - 10
-    boss = Enemy(WIDTH / 2 - boss_image.get_width() / 2, boss_image.get_height() + 10, "IVeryLov3Ron@ld0&YoU")
+    boss = Enemy(WIDTH / 2 - boss_image.get_width() / 2, -boss_image.get_height() - 10, "IVeryLov3Ron@ld0&YoU")
     boss_live = 0
     boss.shuttle_image = boss_image
 
@@ -459,7 +459,7 @@ def runGame():
                             continue
                         if enemies[i].word == "":
                             continue
-                        if (event.key == ord(enemies[i].word[0]) and 0 <= enemies[i].x <= WIDTH and 0 <= enemies[i].y <= HEIGHT):
+                        if (event.key == ord(enemies[i].word[0]) and 0 <= enemies[i].x <= WIDTH):
                             music.soundEffect(player_shooting = True)
                             current_enemy_index = -1
                             enemies[i].text_color = mustard_yellow
