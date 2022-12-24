@@ -554,12 +554,12 @@ def menu():
     start_button = Button(25, 300, menu_start_btn, 0.8)
     exit_button = Button(100, 430, menu_exit_btn, 0.6)
 
-    gura_img = pygame.image.load('image/gura_menu.png')
+    '''gura_img = pygame.image.load('image/gura_menu.png')
     gura_img = Button(240, 225, gura_img, 0.2)
     gura2_img = pygame.image.load('image/gura2_menu.png')
-    gura2_img = Button(65, 450, gura2_img, 0.1)
+    gura2_img = Button(65, 450, gura2_img, 0.1)'''
 
-    title_main_menu = font_8bits_title_main_menu.render('A mishmash', False, (255, 192, 0))
+    title_main_menu = font_8bits_title_main_menu.render("AliType", False, (255, 192, 0))
     title_width = title_main_menu.get_width()
     title_height = title_main_menu.get_height()
     x_title = WIDTH // 2 - title_width // 2
@@ -644,7 +644,7 @@ def menu():
         #print(menu_running)
         if (menu_running == True):
             pygame.display.set_caption("MAIN MENU")
-            print('aaa')
+            #print('aaa')
             screen.blit(menu_bg, (0,0))
             screen.blit(title_main_menu, (x_title, y_title))
             # screen.blit(main_menu, (0, 10))
@@ -654,13 +654,55 @@ def menu():
             setting_button.draw(screen)
             credits_button.draw(screen)
 
-            gura_img.draw(screen)
-            gura2_img.draw(screen)
+            '''gura_img.draw(screen)
+            gura2_img.draw(screen)'''
 
         if (setting_running == True):
             pygame.display.set_caption("SETTING")   
             surface_setting.fill(color_setting)
+
+            setting_line = font_8bits_title.render("Setting", False, (255, 192, 0))
+            music_line= font_8bits.render("Music", False, (0, 0, 0))
+            sound_line= font_8bits.render("Sound", False, (0, 0, 0))
+
+            add_img = pygame.image.load("image/add_button.png")
+            add_volume_button = Button(115, 200, add_img, 0.3)
+            add_sound_button = Button(115, 400, add_img, 0.3)
+            minus_img = pygame.image.load("image/minus_button.png")
+            minus_volume_button = Button(315 - minus_img.get_width()*0.3, 200, minus_img, 0.3)
+            minus_sound_button = Button(315 - minus_img.get_width()*0.3, 400, minus_img, 0.3)
+    
+            back_img = pygame.image.load('image/back_button.png')
+            back_setting_button = Button(290, 590, back_img, 0.3)
+
+            screen.blit(setting_line, ((WIDTH // 2 - (setting_line.get_width()) // 2, 50)))
+            screen.blit(music_line, ((WIDTH // 2 - (music_line.get_width()) // 2, 150)))
+            screen.blit(sound_line, ((WIDTH // 2 - (sound_line.get_width()) // 2, 300)))
+
+            add_volume_button.draw(screen)
+            minus_volume_button.draw(screen)
+            add_sound_button.draw(screen)
+            minus_sound_button.draw(screen)
             back_setting_button.draw(screen)
+
+            pygame.display.flip()
+            x, y = pygame.mouse.get_pos()
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    quit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if add_volume_button.rect.collidepoint(x, y):
+                        music.musicSetting(add_volume = True)
+                    if minus_volume_button.rect.collidepoint(x, y):
+                        music.musicSetting(minus_volume = True)
+                    if add_sound_button.rect.collidepoint(x, y):
+                        music.musicSetting(add_sound = True)
+                    if minus_sound_button.rect.collidepoint(x, y):
+                        music.musicSetting(minus_sound = True)
+                    if back_setting_button.rect.collidepoint(x, y):
+                        menu_running = True
+                        setting_running = False
+                        check_settting_btn = False
 
         if (credits_running == True):
             pygame.display.set_caption("CREDITS")
