@@ -322,19 +322,6 @@ def showLost():
 def showWin():
         show_win = True
 
-        #===========================My Gura===========================
-
-        gura1_win_img = pygame.image.load('image/gura1_winwin.png')
-        gura1_win_img = Button(50, 300, gura1_win_img, 0.2)
-
-        gura2_win_img = pygame.image.load('image/gura2_winwin.png')
-        gura2_win_img = Button(280, 500, gura2_win_img, 0.2)
-
-        gura3_win_img = pygame.image.load('image/gura3_winwin.png')
-        gura3_win_img = Button(170, 170, gura3_win_img, 0.3)
-
-        #===============================================================
-
         win_color_bg = (250,160,160)
         win_announcement = font_8bits_medium.render('You have proved', False, (0, 0, 0,))
         win_sub_announcement = font_8bits_medium.render('You are not a Loser', False, (0, 0, 0,))
@@ -353,16 +340,12 @@ def showWin():
         while show_win:
                 screen.fill(win_color_bg)
 
-                gura1_win_img.draw(screen)
-                gura3_win_img.draw(screen)
-
                 screen.blit(win_announcement, ((WIDTH // 2 - (win_announcement.get_width()) // 2), 30))
                 screen.blit(win_sub_announcement, ((WIDTH // 2 - (win_sub_announcement.get_width()) // 2), 80))
-                back_to_menu_button.draw(screen)
-                replay_button.draw(screen)
-                gura2_win_img.draw(screen)
                 screen.blit(win_announcement_footer, ((WIDTH // 2 - (win_announcement_footer.get_width()) // 2), 600))
                 screen.blit(show_duration_announcement, ((WIDTH // 2 - (show_duration_announcement.get_width()) // 2), 170))
+                back_to_menu_button.draw(screen)
+                replay_button.draw(screen)
                 pygame.display.flip()
 
                 x, y = pygame.mouse.get_pos()
