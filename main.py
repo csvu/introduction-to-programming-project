@@ -517,6 +517,8 @@ def runGame():
         player.all_explosions.update()
         if (boss.health == 0):
                 if boss_live == 1:
+                        music.soundEffect(player_explosion = True)
+                        explosion(screen, (100, 500, 500), (WIDTH / 2, boss.y))
                         global win
                         win = True
                         global duration
