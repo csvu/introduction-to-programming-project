@@ -10,7 +10,7 @@ WIDTH, HEIGHT = 430, 650
 
 lost = False
 to_rungame = False
-win = True
+win = False
 duration = 0
 
 white = (255, 255, 255)
