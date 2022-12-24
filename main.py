@@ -340,10 +340,10 @@ def runGame():
             enemy.draw()
         player.draw()
         player.all_explosions.draw(screen)
-        if lost:
-            '''pygame.mixer.music.pause()'''
-            lost_label = lost_font.render("You loser:)", 1, (255,255,255))
-            screen.blit(lost_label, (WIDTH / 2 - lost_label.get_width() / 2, 350))
+        # if lost:
+        #     '''pygame.mixer.music.pause()'''
+        #     lost_label = lost_font.render("You loser:)", 1, (255,255,255))
+        #     screen.blit(lost_label, (WIDTH / 2 - lost_label.get_width() / 2, 350))
         pygame.display.update()
         
         #def draw():
