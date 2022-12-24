@@ -28,8 +28,8 @@ font_8bits_title = pygame.font.Font("fonts/pixeboy-font/Pixeboy-z8XGD.ttf", 86) 
 #=================================
 
 boss_image = pygame.image.load(os.path.realpath("image/boss.png"))
-small_enemy = pygame.image.load(os.path.realpath("image/small_enemy3.png"))
-player_icon = pygame.image.load(os.path.realpath("image/player_icon2.png"))
+small_enemy = pygame.image.load(os.path.realpath("image/small_enemy5.png"))
+player_icon = pygame.image.load(os.path.realpath("image/player_icon.png"))
 enery_circle = pygame.image.load(os.path.relpath("image/energy_circle3.png"))
 hidden_thing = pygame.image.load(os.path.realpath("image/hidden_thing.png"))
 background = pygame.image.load(os.path.realpath("image/background7.png"))
@@ -183,7 +183,7 @@ class Player(Shuttle):
         self.is_alive = True
 
     def shoot(self, enemy):
-            bullet = Bullet(self.x, self.y, self.bullet_image, enemy)
+            bullet = Bullet(WIDTH / 2 - self.bullet_image.get_width() / 2, self.y, self.bullet_image, enemy)
             self.bullets.append(bullet)
 
     def moveBullets(self, speed):
