@@ -393,6 +393,8 @@ def runGame():
 
     def drawBoard():
         screen.blit(background, (0, 0))
+        nth_wave = font_8bits.render(f"Wave: {level - 3}", 1, (255,255,255))
+        screen.blit(nth_wave, ((WIDTH - nth_wave.get_width()) / 2, 10))
         for enemy in enemies:
             enemy.draw()
         player.draw()
@@ -405,8 +407,6 @@ def runGame():
             lost_label = lost_font.render("You loser:)", 1, (255,255,255))
             screen.blit(lost_label, (WIDTH / 2 - lost_label.get_width() / 2, 350))
         '''
-        nth_wave = font_8bits.render(f"Wave: {level - 3}", 1, (255,255,255))
-        screen.blit(nth_wave, ((WIDTH - nth_wave.get_width()) / 2, 10))
         pygame.display.update()
         
         #def draw():
