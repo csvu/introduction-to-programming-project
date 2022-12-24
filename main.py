@@ -1,6 +1,5 @@
 import pygame, math, os, time, random
 from sound import music #từ sound.py móc class music ra
-#from numpy import log2, power #tai thu vien numpy bang cach vao terminal gõ pip install numpy rồi nhấn enter.
 
 
 pygame.init()
@@ -482,6 +481,8 @@ def runGame():
                         if enemies[i].word == "":
                             continue
                         if (event.key == ord(enemies[i].word[0]) and 0 <= enemies[i].x <= WIDTH and 0 <= enemies[i].y <= HEIGHT):
+                            shot_sound = pygame.mixer.Sound("music\player_shot.mp3")
+                            shot_sound.play()
                             current_enemy_index = -1
                             enemies[i].text_color = mustard_yellow
                             enemies.append(enemies.pop(i))
@@ -493,6 +494,8 @@ def runGame():
                             break
                 else:
                     if event.key == ord(enemies[current_enemy_index].word[0]):
+                        shot_sound = pygame.mixer.Sound("music\player_shot.mp3")
+                        shot_sound.play()
                         player.shoot(enemies[current_enemy_index])
                         enemies[current_enemy_index].word = enemies[current_enemy_index].word[1 : ]
                         if enemies[current_enemy_index].word == "":
@@ -505,7 +508,7 @@ def runGame():
         if (level == 9):
                 boss.move(player, boss_speed)
         if isObjsCollision(boss, player):
-                music.soundEffect()
+                music.soundEffect(player_explosion = True)
                 explosion(screen, (100, 500, 500), (player.x, player.y))
                 #player.is_alive = False
                 lost = True
@@ -515,7 +518,7 @@ def runGame():
             if enemy.health != 0:
                 enemy.move(player, enemy_speed)
             if isObjsCollision(enemy, player):
-                music.soundEffect()
+                music.soundEffect(player_explosion = True)
                 explosion(screen, (100, 500, 500), (player.x, player.y))
                 #player.is_alive = False
                 lost = True
@@ -553,7 +556,7 @@ def runGame():
 def menu():
     menu_running = True
 
-    music.musicGame(menu_running, False)
+    music.musicGame(menu_running = True)
 
     menu_bg = pygame.image.load('image/menu_background.jfif')
     menu_bg = pygame.transform.scale(menu_bg, (WIDTH, HEIGHT))
@@ -630,11 +633,11 @@ def menu():
                 if to_rungame:
                         to_rungame = False
                         lost = False
-                        music.musicGame(menu_running, game_running)
+                        music.musicGame(menu_running = False, game_running = False)
                         runGame()
                 else:
                         menu_running = True
-                        music.musicGame(menu_running, False)
+                        music.musicGame(menu_running = True)
                         lost = False
                         print('bbb')
         #Dành cho Tùng
@@ -699,7 +702,7 @@ def menu():
                     if start_button.rect.collidepoint(x, y):
                         menu_running = False
                         game_running = True #đánh dấu đã thoát menu, vào game chơi
-                        music.musicGame(menu_running, game_running)
+                        music.musicGame(game_running = True)
                         runGame()
 
                     #thêm dòng if ấn vào nút QUIT thì pygame.quit()
