@@ -1,10 +1,6 @@
 import pygame, math, os, time, random
 from sound import music #từ sound.py móc class music ra
-<<<<<<< HEAD
 from numpy import log2, power #tai thu vien numpy bang cach vao terminal gõ pip install numpy rồi nhấn enter.
-=======
->>>>>>> 35543eb40c45e4f106f344b63e13e121f09c3294
-
 
 pygame.init()
 
@@ -36,7 +32,7 @@ small_enemy = pygame.image.load(os.path.realpath("image/small_enemy5.png"))
 player_icon = pygame.image.load(os.path.realpath("image/player_icon.png"))
 enery_circle = pygame.image.load(os.path.relpath("image/energy_circle3.png"))
 hidden_thing = pygame.image.load(os.path.realpath("image/hidden_thing.png"))
-background = pygame.image.load(os.path.realpath("image/background7.png"))
+background = pygame.image.load(os.path.realpath("image/background.png"))
 
 
 
@@ -400,7 +396,7 @@ def runGame():
     clock = pygame.time.Clock()
 
     def drawBoard():
-        screen.blit(background, (0, 0))
+        
         nth_wave = font_8bits.render(f"Wave: {level - 3}", 1, (255,255,255))
         screen.blit(nth_wave, ((WIDTH - nth_wave.get_width()) / 2, 10))
         for enemy in enemies:
@@ -419,11 +415,23 @@ def runGame():
         
         #def draw():
         #    screen.blit(self.image,(self.x, self.y)) 
-      
+    
+    bg_height = background.get_height()
+    scroll = 999999
+    tiles = math.ceil(HEIGHT / bg_height) + 1000
+
     while running:
         
 
         clock.tick(FPS)
+
+        for i in range(0, tiles):
+            screen.blit(background, (0,  i * bg_height - scroll))
+
+        scroll -= 2
+
+        # if  scroll <= 1:
+        #     scroll = 999999
 
         drawBoard()
 
