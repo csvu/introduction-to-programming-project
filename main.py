@@ -113,14 +113,15 @@ def isObjsCollision(obj1, obj2):
     offset_y = obj2.y - obj1.y
     return obj1.mask.overlap(obj2.mask, (offset_x, offset_y)) != None
 
-def explosion(screen, color, position):
+def explosion(screen, color, position, scroll):
     Blast = []
     for i in range(1, 31):
         Blast.append(pygame.image.load("image/guivu/" + str(i) + ".png"))
     print(len(Blast))
 
     for i in range(1, 60, 1):
-        screen.blit(background, (0,0))
+        for j in range (1, 3):
+                screen.blit(background, (0, HEIGHT - j * background.get_height() + scroll))
         HalfWidth = int(Blast[int(i/2)].get_width()/2)
         HalfHeight = Blast[int(i/2)].get_height()/2
         screen.blit(Blast[int(i/2)], (position[0] - HalfWidth, int(position[1] - HalfHeight)))
@@ -507,7 +508,7 @@ def runGame():
                 boss.move(player, boss_speed)
         if isObjsCollision(boss, player):
                 music.soundEffect(player_explosion = True)
-                explosion(screen, (100, 500, 500), (WIDTH / 2, player.y))
+                explosion(screen, (100, 500, 500), (WIDTH / 2, player.y), scroll)
                 #player.is_alive = False
                 lost = True
                 return
@@ -517,7 +518,7 @@ def runGame():
                 enemy.move(player, enemy_speed)
             if isObjsCollision(enemy, player):
                 music.soundEffect(player_explosion = True)
-                explosion(screen, (100, 500, 500), (WIDTH / 2, player.y))
+                explosion(screen, (100, 500, 500), (WIDTH / 2, player.y), scroll)
                 #player.is_alive = False
                 lost = True
                 return
