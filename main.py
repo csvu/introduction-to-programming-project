@@ -1,6 +1,9 @@
 import pygame, math, os, time, random
 from sound import music #từ sound.py móc class music ra
+<<<<<<< HEAD
 from numpy import log2, power #tai thu vien numpy bang cach vao terminal gõ pip install numpy rồi nhấn enter.
+=======
+>>>>>>> 35543eb40c45e4f106f344b63e13e121f09c3294
 
 
 pygame.init()
@@ -12,6 +15,7 @@ WIDTH, HEIGHT = 430, 650
 lost = False
 to_rungame = False
 win = False
+duration = 0
 
 white = (255, 255, 255)
 modern_grey = (42, 42, 42)
@@ -21,13 +25,15 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
 #===========Fonts 8Bits===========
 font_8bits_title_main_menu = pygame.font.Font("fonts/pixeboy-font/Pixeboy-z8XGD.ttf", 86) # dành cho cỡ chữ như main menu
+font_8bits_small = pygame.font.Font("fonts/pixeboy-font/Pixeboy-z8XGD.ttf", 24) # dành cho cỡ chữ small
 font_8bits = pygame.font.Font("fonts/pixeboy-font/Pixeboy-z8XGD.ttf", 32) # dành cho cỡ chữ thường
+font_8bits_medium = pygame.font.Font("fonts/pixeboy-font/Pixeboy-z8XGD.ttf", 48) # dành cho cỡ chữ medium
 font_8bits_title = pygame.font.Font("fonts/pixeboy-font/Pixeboy-z8XGD.ttf", 86) # dành cho cỡ chữ credits và paused
 #=================================
 
 boss_image = pygame.image.load(os.path.realpath("image/boss.png"))
-small_enemy = pygame.image.load(os.path.realpath("image/small_enemy3.png"))
-player_icon = pygame.image.load(os.path.realpath("image/player_icon2.png"))
+small_enemy = pygame.image.load(os.path.realpath("image/small_enemy5.png"))
+player_icon = pygame.image.load(os.path.realpath("image/player_icon.png"))
 enery_circle = pygame.image.load(os.path.relpath("image/energy_circle3.png"))
 hidden_thing = pygame.image.load(os.path.realpath("image/hidden_thing.png"))
 background = pygame.image.load(os.path.realpath("image/background7.png"))
@@ -181,7 +187,7 @@ class Player(Shuttle):
         self.is_alive = True
 
     def shoot(self, enemy):
-            bullet = Bullet(self.x, self.y, self.bullet_image, enemy)
+            bullet = Bullet(WIDTH / 2 - self.bullet_image.get_width() / 2, self.y, self.bullet_image, enemy)
             self.bullets.append(bullet)
 
     def moveBullets(self, speed):
@@ -197,6 +203,7 @@ class Player(Shuttle):
                     expl = Explosion1 (((bullet.x - (bullet.image.get_width() / 2) + 40),(bullet.y - (bullet.image.get_height() / 2))), 'lg')
                     #all_explosions.add(expl)
                     self.all_explosions.add(expl)
+                    music.soundEffect(enemy_explosion = True)
 
                 self.bullets.remove(bullet)
 
@@ -221,9 +228,9 @@ class Enemy(Shuttle):
         text = font.render(self.word, False, self.text_color)
         text_w, text_h = text.get_size()
         if self.color != None:
-                pygame.draw.rect(screen, modern_grey, pygame.Rect(self.x + self.getWidth() / 2 - text_w / 2 - 8, self.y - text_h - 8, text_w + 8, text_h + 8), 0, 3)
+                pygame.draw.rect(screen, modern_grey, pygame.Rect(self.x + self.getWidth() / 2 - text_w / 2 - 4, self.y + self.getHeight() - 4, text_w + 8, text_h + 8), 0, 3)
         if self.health != 0:
-                screen.blit(text, (self.x + self.getWidth() / 2 - text_w / 2, self.y - text_h))
+                screen.blit(text, (self.x + self.getWidth() / 2 - text_w / 2, self.y + self.getHeight()))
 
     def move(self, player, speed):
         unit_x, unit_y = player.x - self.x, player.y - self.y
@@ -275,7 +282,8 @@ def showLost():
         show_lost = True
         lost_color_bg = (105,105,105)
         lost_announcement = font_8bits_title.render('Loser', False, (255, 255, 255,))
-        lost_announcement_footer = font_8bits.render('Con   cai   nit !!! :)', False, (255, 255, 255,))
+
+        music.musicGame(show_lost = True)
 
         back_to_menu_img = pygame.image.load('image/back_to_menu_button.png')
         back_to_menu_button = Button(60, (HEIGHT // 1.5 - (back_to_menu_img.get_height()) // 1.5 ), back_to_menu_img, 0.4)
@@ -286,7 +294,6 @@ def showLost():
         while show_lost:
                 screen.fill(lost_color_bg)
                 screen.blit(lost_announcement, ((WIDTH // 2 - (lost_announcement.get_width()) // 2), 20))
-                screen.blit(lost_announcement_footer, ((WIDTH // 2 - (lost_announcement_footer.get_width()) // 2), 600))
                 back_to_menu_button.draw(screen)
                 replay_button.draw(screen)
                 pygame.display.flip()
@@ -314,6 +321,58 @@ def showLost():
 
 #====================================================================
 
+
+#==========Hien thi man hinh khi ban thang - WINWIN GAME==========
+def showWin():
+        show_win = True
+
+        bg_win = pygame.image.load('./image/bg_win.jpg')
+        bg_win = pygame.transform.scale(bg_win,(WIDTH, HEIGHT))
+        win_announcement = font_8bits_title.render('Congrats !', False, (255, 192, 0))
+
+        music.musicGame(show_win = True)
+
+        replay_img = pygame.image.load('image/replay_buttonn.png')
+        replay_button = Button(50, (HEIGHT // 1.2 - (replay_img.get_height()) // 1.2 ), replay_img, 0.4)
+
+        back_to_menu_img = pygame.image.load('image/back_to_menu_button.png')
+        back_to_menu_button = Button(60, (HEIGHT // 1 - (back_to_menu_img.get_height()) // 1 ), back_to_menu_img, 0.4)
+
+        #=====DURATION=====
+        show_duration_announcement = font_8bits.render('You beat this game', False, (255,255,255))
+        show_duration_announcement2 = font_8bits.render('in ' + str(duration) + ' seconds', False, (255,255,255))
+        #==================
+
+        while show_win:
+                pygame.display.set_caption('WIN')
+                screen.blit(bg_win,(0,0))
+                screen.blit(win_announcement, ((WIDTH // 2 - (win_announcement.get_width()) // 2), 50))
+                screen.blit(show_duration_announcement, ((WIDTH // 2 - (show_duration_announcement.get_width()) // 2), 200))
+                screen.blit(show_duration_announcement2, ((WIDTH // 2 - (show_duration_announcement2.get_width()) // 2), 250))
+                back_to_menu_button.draw(screen)
+                replay_button.draw(screen)
+                pygame.display.flip()
+
+                x, y = pygame.mouse.get_pos()
+
+                for event in pygame.event.get():
+                        if event.type == pygame.QUIT:
+                                quit()
+                        
+                        if event.type == pygame.MOUSEBUTTONDOWN:
+                                if back_to_menu_button.rect.collidepoint(x, y):
+                                        show_win = False
+                                        print('x')
+                                elif replay_button.rect.collidepoint(x, y):
+                                        #Dành cho Tùng
+                                        global to_rungame
+                                        to_rungame = True
+                                        print('y')
+                                        show_win = False
+
+#====================================================================
+
+
 def runGame():
 
     pygame.display.set_caption("A mishmash")
@@ -328,15 +387,16 @@ def runGame():
     wave_length = 2
     boss_speed = 0.2
     enemy_speed = 0.6
-    energy_circle_speed = 10
+    energy_circle_speed = 15
 
     player = Player(0, 0)
     player.x = WIDTH / 2 - player.getWidth() / 2
     player.y = HEIGHT - player.getHeight() - 10
-    boss = Enemy(WIDTH / 2 - boss_image.get_width() / 2, boss_image.get_height() + 10, "IVeryLov3Ron@ld0&YoU")
+    boss = Enemy(WIDTH / 2 - boss_image.get_width() / 2, -boss_image.get_height() - 10, "IVeryLov3Ron@ld0&YoU")
     boss_live = 0
     boss.shuttle_image = boss_image
 
+    start = pygame.time.get_ticks()
     clock = pygame.time.Clock()
 
     def drawBoard():
@@ -395,7 +455,7 @@ def runGame():
             
             if event.type == pygame.KEYDOWN:
                 print (event)
-                if (level == 9 and boss.word != ""):
+                if (level == 9 and boss.word != "" and current_enemy_index == 0):
                         if (event.unicode == boss.word[0]):
                                 player.shoot(boss)
                                 boss.word = boss.word[1 : ]
@@ -405,7 +465,8 @@ def runGame():
                             continue
                         if enemies[i].word == "":
                             continue
-                        if (event.key == ord(enemies[i].word[0]) and 0 <= enemies[i].x <= WIDTH and 0 <= enemies[i].y <= HEIGHT):
+                        if (event.key == ord(enemies[i].word[0]) and 0 <= enemies[i].x <= WIDTH):
+                            music.soundEffect(player_shooting = True)
                             current_enemy_index = -1
                             enemies[i].text_color = mustard_yellow
                             enemies.append(enemies.pop(i))
@@ -415,13 +476,18 @@ def runGame():
                                 enemies[current_enemy_index].color = None
                                 current_enemy_index = 0
                             break
+                        '''elif ( event.key != ord(enemies[i].word[0])):
+                            music.soundEffect(player_type_wrong = True)'''
                 else:
                     if event.key == ord(enemies[current_enemy_index].word[0]):
+                        music.soundEffect(player_shooting = True)
                         player.shoot(enemies[current_enemy_index])
                         enemies[current_enemy_index].word = enemies[current_enemy_index].word[1 : ]
                         if enemies[current_enemy_index].word == "":
                             enemies[current_enemy_index].color = None
                             current_enemy_index = 0
+                    '''elif event.key == ord(enemies[current_enemy_index].word[0]):
+                        music.soundEffect(player_type_wrong = True)'''
                 if event.key == pygame.K_RETURN or event.key == pygame.K_ESCAPE: # Nhan vao Enter hoac Esc thi Paused Game
                         paused() 
 
@@ -429,7 +495,7 @@ def runGame():
         if (level == 9):
                 boss.move(player, boss_speed)
         if isObjsCollision(boss, player):
-                music.soundEffect()
+                music.soundEffect(player_explosion = True)
                 explosion(screen, (100, 500, 500), (player.x, player.y))
                 #player.is_alive = False
                 lost = True
@@ -439,7 +505,7 @@ def runGame():
             if enemy.health != 0:
                 enemy.move(player, enemy_speed)
             if isObjsCollision(enemy, player):
-                music.soundEffect()
+                music.soundEffect(player_explosion = True)
                 explosion(screen, (100, 500, 500), (player.x, player.y))
                 #player.is_alive = False
                 lost = True
@@ -465,6 +531,9 @@ def runGame():
                 if boss_live == 1:
                         global win
                         win = True
+                        global duration
+                        duration = (pygame.time.get_ticks() - start) // 1000
+                        print(duration)
                         return
                 else:
                         boss_live += 1
@@ -474,7 +543,7 @@ def runGame():
 def menu():
     menu_running = True
 
-    music.musicGame(menu_running, False)
+    music.musicGame(menu_running = True)
 
     menu_bg = pygame.image.load('image/menu_background.jfif')
     menu_bg = pygame.transform.scale(menu_bg, (WIDTH, HEIGHT))
@@ -489,12 +558,12 @@ def menu():
     start_button = Button(25, 300, menu_start_btn, 0.8)
     exit_button = Button(100, 430, menu_exit_btn, 0.6)
 
-    gura_img = pygame.image.load('image/gura_menu.png')
+    '''gura_img = pygame.image.load('image/gura_menu.png')
     gura_img = Button(240, 225, gura_img, 0.2)
     gura2_img = pygame.image.load('image/gura2_menu.png')
-    gura2_img = Button(65, 450, gura2_img, 0.1)
+    gura2_img = Button(65, 450, gura2_img, 0.1)'''
 
-    title_main_menu = font_8bits_title_main_menu.render('A mishmash', False, (255, 192, 0))
+    title_main_menu = font_8bits_title_main_menu.render("AliType", False, (255, 192, 0))
     title_width = title_main_menu.get_width()
     title_height = title_main_menu.get_height()
     x_title = WIDTH // 2 - title_width // 2
@@ -551,19 +620,35 @@ def menu():
                 if to_rungame:
                         to_rungame = False
                         lost = False
-                        music.musicGame(menu_running, game_running)
+                        music.musicGame(game_run = True)
                         runGame()
                 else:
                         menu_running = True
-                        music.musicGame(menu_running, False)
+                        music.musicGame(game_run = True)
                         lost = False
                         print('bbb')
         #Dành cho Tùng
-        print('ddd')
-        print(menu_running)
+
+        global win
+        while win:
+                showWin()
+                if to_rungame:
+                        to_rungame = False
+                        win = False
+                        music.musicGame(game_run = True)
+                        runGame()
+                else:
+                        menu_running = True
+                        music.musicGame(game_run = True)
+                        win = False
+                        print('bbb')
+
+
+        #print('ddd')
+        #print(menu_running)
         if (menu_running == True):
             pygame.display.set_caption("MAIN MENU")
-            print('aaa')
+            #print('aaa')
             screen.blit(menu_bg, (0,0))
             screen.blit(title_main_menu, (x_title, y_title))
             # screen.blit(main_menu, (0, 10))
@@ -573,13 +658,55 @@ def menu():
             setting_button.draw(screen)
             credits_button.draw(screen)
 
-            gura_img.draw(screen)
-            gura2_img.draw(screen)
+            '''gura_img.draw(screen)
+            gura2_img.draw(screen)'''
 
         if (setting_running == True):
             pygame.display.set_caption("SETTING")   
             surface_setting.fill(color_setting)
+
+            setting_line = font_8bits_title.render("Setting", False, (255, 192, 0))
+            music_line= font_8bits.render("Music", False, (0, 0, 0))
+            sound_line= font_8bits.render("Sound", False, (0, 0, 0))
+
+            add_img = pygame.image.load("image/add_button.png")
+            add_volume_button = Button(115, 200, add_img, 0.3)
+            add_sound_button = Button(115, 400, add_img, 0.3)
+            minus_img = pygame.image.load("image/minus_button.png")
+            minus_volume_button = Button(315 - minus_img.get_width()*0.3, 200, minus_img, 0.3)
+            minus_sound_button = Button(315 - minus_img.get_width()*0.3, 400, minus_img, 0.3)
+    
+            back_img = pygame.image.load('image/back_button.png')
+            back_setting_button = Button(290, 590, back_img, 0.3)
+
+            screen.blit(setting_line, ((WIDTH // 2 - (setting_line.get_width()) // 2, 50)))
+            screen.blit(music_line, ((WIDTH // 2 - (music_line.get_width()) // 2, 150)))
+            screen.blit(sound_line, ((WIDTH // 2 - (sound_line.get_width()) // 2, 300)))
+
+            add_volume_button.draw(screen)
+            minus_volume_button.draw(screen)
+            add_sound_button.draw(screen)
+            minus_sound_button.draw(screen)
             back_setting_button.draw(screen)
+
+            pygame.display.flip()
+            x, y = pygame.mouse.get_pos()
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    quit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if add_volume_button.rect.collidepoint(x, y):
+                        music.musicSetting(add_volume = True)
+                    if minus_volume_button.rect.collidepoint(x, y):
+                        music.musicSetting(minus_volume = True)
+                    if add_sound_button.rect.collidepoint(x, y):
+                        music.musicSetting(add_sound = True)
+                    if minus_sound_button.rect.collidepoint(x, y):
+                        music.musicSetting(minus_sound = True)
+                    if back_setting_button.rect.collidepoint(x, y):
+                        menu_running = True
+                        setting_running = False
+                        check_settting_btn = False
 
         if (credits_running == True):
             pygame.display.set_caption("CREDITS")
@@ -615,7 +742,7 @@ def menu():
                     if start_button.rect.collidepoint(x, y):
                         menu_running = False
                         game_running = True #đánh dấu đã thoát menu, vào game chơi
-                        music.musicGame(menu_running, game_running)
+                        music.musicGame(game_run = True)
                         runGame()
 
                     #thêm dòng if ấn vào nút QUIT thì pygame.quit()
