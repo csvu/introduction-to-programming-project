@@ -14,7 +14,7 @@ int main()
 
     string Word;
     char word_u_want_start_with;
-    int len_of_word, got = 0;
+    int len_of_word = 4, got = 0;
     
     cout << "Chu cai bat dau: ";
     cin >> word_u_want_start_with;
@@ -42,7 +42,7 @@ bool check(string Word)
 {
     for(int i = 0; i < (int)Word.length(); i++)
     {
-        if( Word[i] > 'z' || Word[i] < 'a' ) 
+        if( Word[i] > 'z' && Word[i] < 'a' ) 
             return false;
     }
     return true;
