@@ -1,5 +1,9 @@
 import pygame, math, os, time, random
 from sound import music #từ sound.py móc class music ra
+<<<<<<< HEAD
+from numpy import log2, power #tai thu vien numpy bang cach vao terminal gõ pip install numpy rồi nhấn enter.
+=======
+>>>>>>> 35543eb40c45e4f106f344b63e13e121f09c3294
 
 
 pygame.init()
