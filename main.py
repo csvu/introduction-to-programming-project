@@ -1,6 +1,5 @@
 import pygame, math, os, time, random
 from sound import music #từ sound.py móc class music ra
-from numpy import log2, power #tai thu vien numpy bang cach vao terminal gõ pip install numpy rồi nhấn enter.
 
 pygame.init()
 
@@ -115,19 +114,20 @@ def isObjsCollision(obj1, obj2):
 
 def explosion(screen, color, position):
     Blast = []
-    for i in range(1, 6):
-        Blast.append(pygame.image.load("image/exp" + str(i) + ".png"))
+    for i in range(1, 31):
+        Blast.append(pygame.image.load("image/guivu/" + str(i) + ".png"))
     print(len(Blast))
 
     for i in range(1, 60, 1):
         screen.blit(background, (0,0))
-        if (i < 25):
-            HalfWidth = int(Blast[int(i/5)].get_width()/2)
-            HalfHeight = Blast[int(i/5)].get_height()/2
-            screen.blit(Blast[int(i/5)], (position[0] - HalfWidth, int(position[1] - HalfHeight)))
+        HalfWidth = int(Blast[int(i/2)].get_width()/2)
+        HalfHeight = Blast[int(i/2)].get_height()/2
+        screen.blit(Blast[int(i/2)], (position[0] - HalfWidth, int(position[1] - HalfHeight)))
         pygame.draw.circle(screen, (70, 163, 141), position , int(math.pow(i, 2.2)), int(4/3*math.log2(i)))
         pygame.display.flip()
-        pygame.time.delay(60)
+        pygame.time.delay(17)
+    pygame.time.delay(1500)
+
 
 class Bullet:
     def __init__(self, x, y, image, enemy):
@@ -371,12 +371,13 @@ def showWin():
 
 def runGame():
 
-    pygame.display.set_caption("A mishmash")
+    pygame.display.set_caption("ALITYPE")
 
     current_enemy_index = 0
     running = True
     FPS = 60
     level = 3
+    boss_level = 5
     main_font = pygame.font.SysFont("Calibri", 50)
 
     enemies = []
@@ -388,21 +389,25 @@ def runGame():
     player = Player(0, 0)
     player.x = WIDTH / 2 - player.getWidth() / 2
     player.y = HEIGHT - player.getHeight() - 10
-    boss = Enemy(WIDTH / 2 - boss_image.get_width() / 2, -boss_image.get_height() - 10, "IVeryLov3Ron@ld0&YoU")
+    boss = Enemy(WIDTH / 2 - boss_image.get_width() / 2, -boss_image.get_height() - 10, "IVeryLov3Me$$I&YoU")
     boss_live = 0
     boss.shuttle_image = boss_image
+
+    scroll = 0
 
     start = pygame.time.get_ticks()
     clock = pygame.time.Clock()
 
     def drawBoard():
+        for i in range (1, 3):
+                screen.blit(background, (0, HEIGHT - i * background.get_height() + scroll))
         
         nth_wave = font_8bits.render(f"Wave: {level - 3}", 1, (255,255,255))
         screen.blit(nth_wave, ((WIDTH - nth_wave.get_width()) / 2, 10))
         for enemy in enemies:
             enemy.draw()
         player.draw()
-        if level == 9:
+        if level == 11:
                 boss.draw()
         player.all_explosions.draw(screen)
         '''
@@ -435,6 +440,10 @@ def runGame():
 
         drawBoard()
 
+        if scroll >= background.get_height():
+                scroll = 0
+        scroll += 0.5
+
         flag = True
         for enemy in enemies:
             if (enemy.word != ""):
@@ -443,16 +452,20 @@ def runGame():
 
 
         if flag:
-            if (level != 9):
+            if (level != 11):
                 level += 1
             wave_length += 1
-            if (level == 8):
+            if (level == 10):
                 level += 1
                 wave_length = 2
+                enemy_speed = 0.9
+            if (level == 11):
+                boss_level += 1
+
 
         
             for i in range(wave_length):
-                lines = open(os.path.realpath(f"word_list/{level}_chars/{chr(i + 97)}.txt")).read().splitlines()
+                lines = open(os.path.realpath(f"word_list/{level if level != 11 else boss_level}_chars/{chr(i + 97)}.txt")).read().splitlines()
                 enemy = Enemy(2 * i * small_enemy.get_width() - 100, random.randrange(-150, -100), random.choice(lines))
                 enemies.append(enemy)
 
@@ -463,9 +476,10 @@ def runGame():
             
             if event.type == pygame.KEYDOWN:
                 print (event)
-                if (level == 9 and boss.word != "" and current_enemy_index == 0):
+                if (level == 11 and boss.word != "" and current_enemy_index == 0):
                         if (event.unicode == boss.word[0]):
                                 player.shoot(boss)
+                                music.soundEffect(player_shooting = True)
                                 boss.word = boss.word[1 : ]
                 if current_enemy_index == 0:
                     for i in range(len(enemies)):
@@ -473,7 +487,7 @@ def runGame():
                             continue
                         if enemies[i].word == "":
                             continue
-                        if (event.key == ord(enemies[i].word[0]) and 0 <= enemies[i].x <= WIDTH):
+                        if (event.key == ord(enemies[i].word[0]) and 0 <= enemies[i].x <= WIDTH and enemies[i].y >= -enemies[i].getHeight()):
                             music.soundEffect(player_shooting = True)
                             current_enemy_index = -1
                             enemies[i].text_color = mustard_yellow
@@ -500,11 +514,11 @@ def runGame():
                         paused() 
 
         global lost
-        if (level == 9):
+        if (level == 11):
                 boss.move(player, boss_speed)
         if isObjsCollision(boss, player):
                 music.soundEffect(player_explosion = True)
-                explosion(screen, (100, 500, 500), (player.x, player.y))
+                explosion(screen, (100, 500, 500), (WIDTH / 2, player.y))
                 #player.is_alive = False
                 lost = True
                 return
@@ -514,7 +528,7 @@ def runGame():
                 enemy.move(player, enemy_speed)
             if isObjsCollision(enemy, player):
                 music.soundEffect(player_explosion = True)
-                explosion(screen, (100, 500, 500), (player.x, player.y))
+                explosion(screen, (100, 500, 500), (WIDTH / 2, player.y))
                 #player.is_alive = False
                 lost = True
                 return
@@ -537,6 +551,8 @@ def runGame():
         player.all_explosions.update()
         if (boss.health == 0):
                 if boss_live == 1:
+                        music.soundEffect(player_explosion = True)
+                        explosion(screen, (100, 500, 500), (WIDTH / 2, boss.y + 20))
                         global win
                         win = True
                         global duration
@@ -545,7 +561,7 @@ def runGame():
                         return
                 else:
                         boss_live += 1
-                        boss.word = "ABCDEFG" 
+                        boss.word = "AC&)!^G$%+&AND*#YOU%^!_WIN!" 
                         boss.health = len(boss.word)
 
 def menu():
