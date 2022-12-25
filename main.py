@@ -115,19 +115,18 @@ def isObjsCollision(obj1, obj2):
 
 def explosion(screen, color, position):
     Blast = []
-    for i in range(1, 6):
-        Blast.append(pygame.image.load("image/exp" + str(i) + ".png"))
+    for i in range(1, 31):
+        Blast.append(pygame.image.load("image/guivu/" + str(i) + ".png"))
     print(len(Blast))
 
     for i in range(1, 60, 1):
         screen.blit(background, (0,0))
-        if (i < 25):
-            HalfWidth = int(Blast[int(i/5)].get_width()/2)
-            HalfHeight = Blast[int(i/5)].get_height()/2
-            screen.blit(Blast[int(i/5)], (position[0] - HalfWidth, int(position[1] - HalfHeight)))
+        HalfWidth = int(Blast[int(i/2)].get_width()/2)
+        HalfHeight = Blast[int(i/2)].get_height()/2
+        screen.blit(Blast[int(i/2)], (position[0] - HalfWidth, int(position[1] - HalfHeight)))
         pygame.draw.circle(screen, (70, 163, 141), position , int(math.pow(i, 2.2)), int(4/3*math.log2(i)))
         pygame.display.flip()
-        pygame.time.delay(60)
+        pygame.time.delay(22)
 
 class Bullet:
     def __init__(self, x, y, image, enemy):
@@ -454,6 +453,7 @@ def runGame():
                 if (level == 9 and boss.word != "" and current_enemy_index == 0):
                         if (event.unicode == boss.word[0]):
                                 player.shoot(boss)
+                                music.soundEffect(player_shooting = True)
                                 boss.word = boss.word[1 : ]
                 if current_enemy_index == 0:
                     for i in range(len(enemies)):
@@ -492,7 +492,7 @@ def runGame():
                 boss.move(player, boss_speed)
         if isObjsCollision(boss, player):
                 music.soundEffect(player_explosion = True)
-                explosion(screen, (100, 500, 500), (player.x, player.y))
+                explosion(screen, (100, 500, 500), (WIDTH / 2, player.y))
                 #player.is_alive = False
                 lost = True
                 return
@@ -502,7 +502,7 @@ def runGame():
                 enemy.move(player, enemy_speed)
             if isObjsCollision(enemy, player):
                 music.soundEffect(player_explosion = True)
-                explosion(screen, (100, 500, 500), (player.x, player.y))
+                explosion(screen, (100, 500, 500), (WIDTH / 2, player.y))
                 #player.is_alive = False
                 lost = True
                 return
@@ -526,7 +526,7 @@ def runGame():
         if (boss.health == 0):
                 if boss_live == 1:
                         music.soundEffect(player_explosion = True)
-                        explosion(screen, (100, 500, 500), (WIDTH / 2, boss.y))
+                        explosion(screen, (100, 500, 500), (WIDTH / 2, boss.y + 20))
                         global win
                         win = True
                         global duration
