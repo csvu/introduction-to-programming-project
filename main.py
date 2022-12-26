@@ -710,7 +710,7 @@ def menu():
             add_sound_button.draw(screen)
             minus_sound_button.draw(screen)
             back_setting_button.draw(screen)
-
+            
             pygame.display.flip()
             x, y = pygame.mouse.get_pos()
             for event in pygame.event.get():
