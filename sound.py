@@ -58,3 +58,13 @@ class music:
             game_sound = pygame.mixer.Sound("music\player_type_wrong.mp3")
         game_sound.play()
         game_sound.set_volume(volume_sound)
+
+    def displayVolumeSetting():
+        global volume
+        volume = float( "{:.1f}".format(volume) )
+        return volume
+
+    def displaySoundSetting():
+        global volume_sound
+        volume_sound = float( "{:.1f}".format(volume_sound) )
+        return volume_sound

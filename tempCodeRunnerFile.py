@@ -1,1 +1,1 @@
-Setting(
+pause_music

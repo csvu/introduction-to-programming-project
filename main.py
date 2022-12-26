@@ -1,6 +1,7 @@
 import pygame, math, os, time, random
 from sound import music #từ sound.py móc class music ra
 
+
 pygame.init()
 
 BLACK = (0,0,0)
@@ -11,6 +12,7 @@ lost = False
 to_rungame = False
 win = False
 duration = 0
+score = 0
 
 white = (255, 255, 255)
 modern_grey = (42, 42, 42)
@@ -31,7 +33,7 @@ small_enemy = pygame.image.load(os.path.realpath("image/small_enemy5.png"))
 player_icon = pygame.image.load(os.path.realpath("image/player_icon.png"))
 enery_circle = pygame.image.load(os.path.relpath("image/energy_circle3.png"))
 hidden_thing = pygame.image.load(os.path.realpath("image/hidden_thing.png"))
-background = pygame.image.load(os.path.realpath("image/background.png"))
+background = pygame.image.load(os.path.realpath("image/background7.png"))
 
 
 
@@ -112,15 +114,14 @@ def isObjsCollision(obj1, obj2):
     offset_y = obj2.y - obj1.y
     return obj1.mask.overlap(obj2.mask, (offset_x, offset_y)) != None
 
-def explosion(screen, color, position, scroll):
+def explosion(screen, color, position):
     Blast = []
     for i in range(1, 31):
         Blast.append(pygame.image.load("image/guivu/" + str(i) + ".png"))
     print(len(Blast))
 
     for i in range(1, 60, 1):
-        for j in range (1, 3):
-                screen.blit(background, (0, HEIGHT - j * background.get_height() + scroll))
+        screen.blit(background, (0,0))
         HalfWidth = int(Blast[int(i/2)].get_width()/2)
         HalfHeight = Blast[int(i/2)].get_height()/2
         screen.blit(Blast[int(i/2)], (position[0] - HalfWidth, int(position[1] - HalfHeight)))
@@ -279,6 +280,7 @@ def showLost():
         show_lost = True
         lost_color_bg = (105,105,105)
         lost_announcement = font_8bits_title.render('Loser', False, (255, 255, 255,))
+        show_duration_announcement3 = font_8bits.render('Your score: ' + str(score), False, (255,255,255))
 
         music.musicGame(show_lost = True)
 
@@ -291,6 +293,7 @@ def showLost():
         while show_lost:
                 screen.fill(lost_color_bg)
                 screen.blit(lost_announcement, ((WIDTH // 2 - (lost_announcement.get_width()) // 2), 20))
+                screen.blit(show_duration_announcement3, ((WIDTH // 2 - (show_duration_announcement3.get_width()) // 2), 100))
                 back_to_menu_button.draw(screen)
                 replay_button.draw(screen)
                 pygame.display.flip()
@@ -300,11 +303,6 @@ def showLost():
                 for event in pygame.event.get():
                         if event.type == pygame.QUIT:
                                 quit()
-                        '''
-                        if event.type == pygame.KEYDOWN:
-                                if event.key == pygame.K_q:
-                                        quit()
-                        '''
                         if event.type == pygame.MOUSEBUTTONDOWN:
                                 if back_to_menu_button.rect.collidepoint(x, y):
                                         show_lost = False
@@ -338,14 +336,15 @@ def showWin():
         #=====DURATION=====
         show_duration_announcement = font_8bits.render('You beat this game', False, (255,255,255))
         show_duration_announcement2 = font_8bits.render('in ' + str(duration) + ' seconds', False, (255,255,255))
+        show_duration_announcement3 = font_8bits.render('Your score: ' + str(score), False, (255,255,255))
         #==================
 
         while show_win:
-                pygame.display.set_caption('WIN')
                 screen.blit(bg_win,(0,0))
                 screen.blit(win_announcement, ((WIDTH // 2 - (win_announcement.get_width()) // 2), 50))
                 screen.blit(show_duration_announcement, ((WIDTH // 2 - (show_duration_announcement.get_width()) // 2), 200))
                 screen.blit(show_duration_announcement2, ((WIDTH // 2 - (show_duration_announcement2.get_width()) // 2), 250))
+                screen.blit(show_duration_announcement3, ((WIDTH // 2 - (show_duration_announcement3.get_width()) // 2), 300))
                 back_to_menu_button.draw(screen)
                 replay_button.draw(screen)
                 pygame.display.flip()
@@ -371,9 +370,6 @@ def showWin():
 
 
 def runGame():
-
-    pygame.display.set_caption("ALITYPE")
-
     current_enemy_index = 0
     running = True
     FPS = 60
@@ -421,23 +417,11 @@ def runGame():
         
         #def draw():
         #    screen.blit(self.image,(self.x, self.y)) 
-    
-    bg_height = background.get_height()
-    scroll = 999999
-    tiles = math.ceil(HEIGHT / bg_height) + 1000
-
+      
     while running:
-        
+        global score
 
         clock.tick(FPS)
-
-        for i in range(0, tiles):
-            screen.blit(background, (0,  i * bg_height - scroll))
-
-        scroll -= 2
-
-        # if  scroll <= 1:
-        #     scroll = 999999
 
         drawBoard()
 
@@ -481,6 +465,7 @@ def runGame():
                         if (event.unicode == boss.word[0]):
                                 player.shoot(boss)
                                 music.soundEffect(player_shooting = True)
+                                score += 1
                                 boss.word = boss.word[1 : ]
                 if current_enemy_index == 0:
                     for i in range(len(enemies)):
@@ -490,6 +475,7 @@ def runGame():
                             continue
                         if (event.key == ord(enemies[i].word[0]) and 0 <= enemies[i].x <= WIDTH and enemies[i].y >= -enemies[i].getHeight()):
                             music.soundEffect(player_shooting = True)
+                            score += 1
                             current_enemy_index = -1
                             enemies[i].text_color = mustard_yellow
                             enemies.append(enemies.pop(i))
@@ -504,6 +490,7 @@ def runGame():
                 else:
                     if event.key == ord(enemies[current_enemy_index].word[0]):
                         music.soundEffect(player_shooting = True)
+                        score += 1
                         player.shoot(enemies[current_enemy_index])
                         enemies[current_enemy_index].word = enemies[current_enemy_index].word[1 : ]
                         if enemies[current_enemy_index].word == "":
@@ -511,7 +498,8 @@ def runGame():
                             current_enemy_index = 0
                     '''elif event.key == ord(enemies[current_enemy_index].word[0]):
                         music.soundEffect(player_type_wrong = True)'''
-                if event.key == pygame.K_RETURN or event.key == pygame.K_ESCAPE: # Nhan vao Enter hoac Esc thi Paused Game
+                #if event.key == pygame.K_RETURN or event.key == pygame.K_ESCAPE: # Nhan vao Enter hoac Esc thi Paused Game
+                if event.key == pygame.K_ESCAPE:
                         paused() 
 
         global lost
@@ -519,7 +507,7 @@ def runGame():
                 boss.move(player, boss_speed)
         if isObjsCollision(boss, player):
                 music.soundEffect(player_explosion = True)
-                explosion(screen, (100, 500, 500), (WIDTH / 2, player.y), scroll)
+                explosion(screen, (100, 500, 500), (WIDTH / 2, player.y))
                 #player.is_alive = False
                 lost = True
                 return
@@ -529,7 +517,7 @@ def runGame():
                 enemy.move(player, enemy_speed)
             if isObjsCollision(enemy, player):
                 music.soundEffect(player_explosion = True)
-                explosion(screen, (100, 500, 500), (WIDTH / 2, player.y), scroll)
+                explosion(screen, (100, 500, 500), (WIDTH / 2, player.y))
                 #player.is_alive = False
                 lost = True
                 return
@@ -566,6 +554,7 @@ def runGame():
                         boss.health = len(boss.word)
 
 def menu():
+    pygame.display.set_caption("AliType")
     menu_running = True
 
     music.musicGame(menu_running = True)
@@ -604,8 +593,8 @@ def menu():
     back_img = pygame.image.load('image/back_button.png')
     back_setting_button = Button(290, 590, back_img, 0.3)
 
-    menu_setting_btn = pygame.image.load('image/setting_btn.png')
-    setting_button = Button(360, 580, menu_setting_btn, 0.08)
+    menu_setting_btn = pygame.image.load('image/gbrdb (2).png')
+    setting_button = Button(360, 580, menu_setting_btn, 0.4)
 
     #===========Credit==========
     credits_running = False
@@ -672,7 +661,6 @@ def menu():
         #print('ddd')
         #print(menu_running)
         if (menu_running == True):
-            pygame.display.set_caption("MAIN MENU")
             #print('aaa')
             screen.blit(menu_bg, (0,0))
             screen.blit(title_main_menu, (x_title, y_title))
@@ -687,18 +675,22 @@ def menu():
             gura2_img.draw(screen)'''
 
         if (setting_running == True):
-            pygame.display.set_caption("SETTING")   
             surface_setting.fill(color_setting)
 
+            volume = music.displayVolumeSetting()
+            volume_sound = music.displaySoundSetting()
+
             setting_line = font_8bits_title.render("Setting", False, (255, 192, 0))
-            music_line= font_8bits.render("Music", False, (0, 0, 0))
-            sound_line= font_8bits.render("Sound", False, (0, 0, 0))
+            music_line= font_8bits_medium.render("Music", False, (0, 0, 0))
+            show_music = font_8bits_medium.render(str(volume), False, (0, 0, 0))
+            sound_line= font_8bits_medium.render("Sound", False, (0, 0, 0))
+            show_sound = font_8bits_medium.render(str(volume_sound), False, (0, 0, 0))
 
             add_img = pygame.image.load("image/add_button.png")
-            add_volume_button = Button(115, 200, add_img, 0.3)
+            add_volume_button = Button(115, 225, add_img, 0.3)
             add_sound_button = Button(115, 400, add_img, 0.3)
             minus_img = pygame.image.load("image/minus_button.png")
-            minus_volume_button = Button(315 - minus_img.get_width()*0.3, 200, minus_img, 0.3)
+            minus_volume_button = Button(315 - minus_img.get_width()*0.3, 225, minus_img, 0.3)
             minus_sound_button = Button(315 - minus_img.get_width()*0.3, 400, minus_img, 0.3)
     
             back_img = pygame.image.load('image/back_button.png')
@@ -706,7 +698,9 @@ def menu():
 
             screen.blit(setting_line, ((WIDTH // 2 - (setting_line.get_width()) // 2, 50)))
             screen.blit(music_line, ((WIDTH // 2 - (music_line.get_width()) // 2, 150)))
+            screen.blit(show_music, ((WIDTH // 2 - (show_music.get_width()) // 2), 235))
             screen.blit(sound_line, ((WIDTH // 2 - (sound_line.get_width()) // 2, 300)))
+            screen.blit(show_sound, ((WIDTH // 2 - (show_sound.get_width()) // 2), 410))
 
             add_volume_button.draw(screen)
             minus_volume_button.draw(screen)
@@ -734,7 +728,6 @@ def menu():
                         check_settting_btn = False
 
         if (credits_running == True):
-            pygame.display.set_caption("CREDITS")
             surface_credits.fill(color_credits)
             back_credits_button.draw(screen)
             
@@ -750,7 +743,7 @@ def menu():
             screen.blit(credits_music, ((WIDTH // 2 - (credits_music.get_width()) // 2, 450)))
             screen.blit(credits_name, ((WIDTH // 2 - (credits_name.get_width()) // 2, 500)))
 
-        
+
         # if (paused == True):
         #     pass
         ############################
