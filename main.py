@@ -375,6 +375,7 @@ def runGame():
     FPS = 60
     level = 3
     boss_level = 5
+    offset = 0
     main_font = pygame.font.SysFont("Calibri", 50)
 
     enemies = []
@@ -401,11 +402,11 @@ def runGame():
         
         nth_wave = font_8bits.render(f"Wave: {level - 3}", 1, (255,255,255))
         screen.blit(nth_wave, ((WIDTH - nth_wave.get_width()) / 2, 10))
+        if level == 11:
+                boss.draw()
         for enemy in enemies:
             enemy.draw()
         player.draw()
-        if level == 11:
-                boss.draw()
         player.all_explosions.draw(screen)
         '''
         if lost:
@@ -451,9 +452,9 @@ def runGame():
         
             for i in range(wave_length):
                 lines = open(os.path.realpath(f"word_list/{level if level != 11 else boss_level}_chars/{chr(i + 97)}.txt")).read().splitlines()
-                enemy = Enemy(2 * i * small_enemy.get_width() - 100, random.randrange(-150, -100), random.choice(lines))
+                enemy = Enemy(((-1) ** offset) * (2 * i * small_enemy.get_width() - 10) + (offset) * WIDTH, random.randrange(-200, -100), random.choice(lines))
                 enemies.append(enemy)
-
+            offset ^= 1
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -541,7 +542,7 @@ def runGame():
         if (boss.health == 0):
                 if boss_live == 1:
                         music.soundEffect(player_explosion = True)
-                        explosion(screen, (100, 500, 500), (WIDTH / 2, boss.y + 20))
+                        explosion(screen, (100, 500, 500), (WIDTH / 2, boss.y + 20), scroll)
                         global win
                         win = True
                         global duration
