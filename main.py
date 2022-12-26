@@ -407,11 +407,11 @@ def runGame():
         
         nth_wave = font_8bits.render(f"Wave: {level - 3}", 1, (255,255,255))
         screen.blit(nth_wave, ((WIDTH - nth_wave.get_width()) / 2, 10))
+        if level == 11:
+                boss.draw()
         for enemy in enemies:
             enemy.draw()
         player.draw()
-        if level == 11:
-                boss.draw()
         player.all_explosions.draw(screen)
         '''
         if lost:
