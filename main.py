@@ -12,7 +12,6 @@ lost = False
 to_rungame = False
 win = False
 duration = 0
-score = 0
 
 white = (255, 255, 255)
 modern_grey = (42, 42, 42)
@@ -376,6 +375,8 @@ def runGame():
     level = 3
     boss_level = 5
     offset = 0
+    global score
+    score = 0
     main_font = pygame.font.SysFont("Calibri", 50)
 
     enemies = []
@@ -420,8 +421,6 @@ def runGame():
         #    screen.blit(self.image,(self.x, self.y)) 
       
     while running:
-        global score
-
         clock.tick(FPS)
 
         drawBoard()
@@ -594,7 +593,7 @@ def menu():
     back_img = pygame.image.load('image/back_button.png')
     back_setting_button = Button(290, 590, back_img, 0.3)
 
-    menu_setting_btn = pygame.image.load('image/gbrdb (2).png')
+    menu_setting_btn = pygame.image.load('image/setting_btn.png')
     setting_button = Button(360, 580, menu_setting_btn, 0.4)
 
     #===========Credit==========
@@ -698,9 +697,9 @@ def menu():
             back_setting_button = Button(290, 590, back_img, 0.3)
 
             screen.blit(setting_line, ((WIDTH // 2 - (setting_line.get_width()) // 2, 50)))
-            screen.blit(music_line, ((WIDTH // 2 - (music_line.get_width()) // 2, 150)))
+            screen.blit(music_line, ((WIDTH // 2 - (music_line.get_width()) // 2, 180)))
             screen.blit(show_music, ((WIDTH // 2 - (show_music.get_width()) // 2), 235))
-            screen.blit(sound_line, ((WIDTH // 2 - (sound_line.get_width()) // 2, 300)))
+            screen.blit(sound_line, ((WIDTH // 2 - (sound_line.get_width()) // 2, 355)))
             screen.blit(show_sound, ((WIDTH // 2 - (show_sound.get_width()) // 2), 410))
 
             add_volume_button.draw(screen)

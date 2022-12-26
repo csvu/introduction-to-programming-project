@@ -1,1 +1,1 @@
-pause_music
+showLost()
