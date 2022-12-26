@@ -489,7 +489,7 @@ def runGame():
                                 enemies[current_enemy_index].color = None
                                 current_enemy_index = 0
                             break
-                        '''elif ( event.key != ord(enemies[i].word[0])):
+                        '''elif event.key != pygame.K_ESCAPE:
                             music.soundEffect(player_type_wrong = True)'''
                 else:
                     if event.key == ord(enemies[current_enemy_index].word[0]):
@@ -500,7 +500,7 @@ def runGame():
                         if enemies[current_enemy_index].word == "":
                             enemies[current_enemy_index].color = None
                             current_enemy_index = 0
-                    '''elif event.key == ord(enemies[current_enemy_index].word[0]):
+                    '''elif event.key != pygame.K_ESCAPE:
                         music.soundEffect(player_type_wrong = True)'''
                 #if event.key == pygame.K_RETURN or event.key == pygame.K_ESCAPE: # Nhan vao Enter hoac Esc thi Paused Game
                 if event.key == pygame.K_ESCAPE:

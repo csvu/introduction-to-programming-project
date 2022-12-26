@@ -1,7 +1,11 @@
 import pygame
 
-volume = 1.0
-volume_sound = 1.0
+with open("music/music.txt",'r',encoding = 'utf-8') as v_str:
+    volume_str = v_str.read()
+volume = float(volume_str)
+with open("music/sound.txt",'r',encoding = 'utf-8') as s_str:
+    volume_sound_str = s_str.read()
+volume_sound = float(volume_sound_str)
 
 class music:
     def musicSetting(add_volume = False, minus_volume = False, add_sound = False, minus_sound = False):
@@ -29,6 +33,10 @@ class music:
             if volume_sound <= 0.0: volume_sound = 0.0
             volume_sound = round(volume_sound, 1)
             print(volume_sound)
+        volume_str = str(volume)
+        with open("music/music.txt",'w',encoding = 'utf-8') as f: f.write(volume_str)
+        volume_sound_str = str(volume_sound)
+        with open("music/sound.txt",'w',encoding = 'utf-8') as f: f.write(volume_sound_str)
 
     def musicGame(menu_running = False, game_run = False, show_lost = False, show_win = False):
         global volume
@@ -54,11 +62,13 @@ class music:
             pygame.mixer.quit()
             pygame.mixer.init()
             game_sound = pygame.mixer.Sound("music\player_collision.mp3")
+        if player_type_wrong == True and player_shooting != True:
+            game_sound = pygame.mixer.Sound("music\player_type_wrong.mp3")
         if player_shooting == True:
             game_sound = pygame.mixer.Sound("music\player_shot.mp3")
         if enemy_explosion == True:
             game_sound = pygame.mixer.Sound("music\enemy_collision.mp3")
-        if player_type_wrong == True:
+        if player_type_wrong == True and player_shooting != True:
             game_sound = pygame.mixer.Sound("music\player_type_wrong.mp3")
         game_sound.play()
         game_sound.set_volume(volume_sound)
