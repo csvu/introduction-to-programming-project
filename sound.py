@@ -10,20 +10,24 @@ class music:
         if add_volume == True:
             volume += 0.1
             if volume >= 1.0: volume = 1.0
+            volume = round(volume, 1)
             background_music.set_volume(volume)
             print(volume)
         if minus_volume == True:
             volume -= 0.1
             if volume <= 0.0: volume = 0.0
+            volume = round(volume, 1)
             background_music.set_volume(volume)
             print(volume)
         if add_sound == True:
             volume_sound += 0.1
             if volume_sound >= 1.0: volume_sound = 1.0
+            volume_sound = round(volume_sound, 1)
             print(volume_sound)
         if minus_sound == True:
             volume_sound -= 0.1
             if volume_sound <= 0.0: volume_sound = 0.0
+            volume_sound = round(volume_sound, 1)
             print(volume_sound)
 
     def musicGame(menu_running = False, game_run = False, show_lost = False, show_win = False):
@@ -61,10 +65,8 @@ class music:
 
     def displayVolumeSetting():
         global volume
-        volume = float( "{:.1f}".format(volume) )
         return volume
 
     def displaySoundSetting():
         global volume_sound
-        volume_sound = float( "{:.1f}".format(volume_sound) )
         return volume_sound

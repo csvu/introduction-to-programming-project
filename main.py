@@ -11,7 +11,6 @@ WIDTH, HEIGHT = 430, 650
 lost = False
 to_rungame = False
 win = False
-duration = 0
 
 white = (255, 255, 255)
 modern_grey = (42, 42, 42)
@@ -333,6 +332,9 @@ def showWin():
         back_to_menu_button = Button(60, (HEIGHT // 1 - (back_to_menu_img.get_height()) // 1 ), back_to_menu_img, 0.4)
 
         #=====DURATION=====
+        global time_end
+        time_end = time.time()
+        duration = round(time_end - time_start)
         show_duration_announcement = font_8bits.render('You beat this game', False, (255,255,255))
         show_duration_announcement2 = font_8bits.render('in ' + str(duration) + ' seconds', False, (255,255,255))
         show_duration_announcement3 = font_8bits.render('Your score: ' + str(score), False, (255,255,255))
@@ -377,6 +379,8 @@ def runGame():
     offset = 0
     global score
     score = 0
+    global duration
+    duration = 0
     main_font = pygame.font.SysFont("Calibri", 50)
 
     enemies = []
@@ -544,7 +548,6 @@ def runGame():
                         explosion(screen, (100, 500, 500), (WIDTH / 2, boss.y + 20), scroll)
                         global win
                         win = True
-                        global duration
                         duration = (pygame.time.get_ticks() - start) // 1000
                         print(duration)
                         return
@@ -761,6 +764,8 @@ def menu():
                         menu_running = False
                         game_running = True #đánh dấu đã thoát menu, vào game chơi
                         music.musicGame(game_run = True)
+                        global time_start
+                        time_start = time.time() #thời gian bắt đầu lượt chơi mới
                         runGame()
 
                     #thêm dòng if ấn vào nút QUIT thì pygame.quit()
