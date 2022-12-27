@@ -475,7 +475,7 @@ def runGame():
 
 
 
-            arr = random.sample(range(26), wave_length + 3)
+            arr = random.sample(range(26), wave_length)
             for i in range(wave_length):
                 lines = open(os.path.realpath(f"word_list/{min(level, 6)}_chars/{chr(arr[i] + 97)}.txt")).read().splitlines()
                 #lines = open(os.path.realpath(f"word_list/{level if level != 11 else boss_level}_chars/{chr(i + 97)}.txt")).read().splitlines()

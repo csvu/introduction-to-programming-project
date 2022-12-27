@@ -1,1 +1,1 @@
-type_wro
+arr = random.sample(range(26), wave_length + 3)
