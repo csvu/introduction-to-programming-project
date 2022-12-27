@@ -56,7 +56,7 @@ class music:
         background_music.play(-1) #lặp nhạc nền vô số lần
         background_music.set_volume(volume)
 
-    def soundEffect(player_type_wrong = False, player_explosion = False, player_shooting = False, enemy_explosion = False):
+    def soundEffect(player_type_wrong = False, player_shooting = False, enemy_explosion = False, clicking = False, player_explosion = False):
         global volume_sound
         global game_sound
         pygame.mixer.init()
@@ -72,6 +72,8 @@ class music:
             game_sound = pygame.mixer.Sound("music\enemy_collision.mp3")
         if player_type_wrong == True and player_shooting != True:
             game_sound = pygame.mixer.Sound("music\player_type_wrong.mp3")
+        if clicking == True:
+            game_sound = pygame.mixer.Sound("music\clicking.mp3")
         game_sound.play()
         game_sound.set_volume(volume_sound)
 

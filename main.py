@@ -269,6 +269,7 @@ def paused():
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if back_paused_button.rect.collidepoint(x, y):
+                    music.soundEffect(clicking = True)
                     paused_game = False
                     menu()
 
@@ -304,6 +305,7 @@ def showLost():
                                 quit()
                         if event.type == pygame.MOUSEBUTTONDOWN:
                                 if back_to_menu_button.rect.collidepoint(x, y):
+                                        music.soundEffect(clicking = True)
                                         show_lost = False
                                         print('x')
                                 elif replay_button.rect.collidepoint(x, y):
@@ -359,6 +361,7 @@ def showWin():
                         
                         if event.type == pygame.MOUSEBUTTONDOWN:
                                 if back_to_menu_button.rect.collidepoint(x, y):
+                                        music.soundEffect(clicking = True)
                                         show_win = False
                                         print('x')
                                 elif replay_button.rect.collidepoint(x, y):
@@ -397,7 +400,8 @@ def runGame():
     player = Player(0, 0)
     player.x = WIDTH / 2 - player.getWidth() / 2
     player.y = HEIGHT - player.getHeight() - 10
-    boss = Enemy(WIDTH / 2 - boss_image.get_width() / 2, -boss_image.get_height() - 10, "IV3RYL@V3ME$$I&YoU")
+    #boss = Enemy(WIDTH / 2 - boss_image.get_width() / 2, -boss_image.get_height() - 10, "IV3RYL@V3ME$$I&YoU")
+    boss = Enemy(WIDTH / 2 - boss_image.get_width() / 2, -boss_image.get_height() - 10, "1\/38\|/|_@\/3|\/|3$$1")
     boss_live = 0
     boss.shuttle_image = boss_image
 
@@ -416,11 +420,15 @@ def runGame():
         done_wave1 = font_8bits.render("Go", True, (255,255,255))
         done_wave2 = font_8bits_small.render("Clear", True, (255,255,255))
         done_wave3 = font_8bits_small.render(f"Your score: {score}", True, (255,255,255))
+        done_wave4 = font_8bits_small.render("Warning!", True, (255, 0, 0))
         if time.time() < wave_start:
             if level == 4:
                 screen.blit( done_wave1, ((WIDTH - done_wave1.get_width()) // 2, (HEIGHT - done_wave1.get_height()) // 2) )
-            elif level > 4:
+            elif level > 4 and level != 11:
                 screen.blit( done_wave2, ((WIDTH - done_wave2.get_width()) // 2, HEIGHT//2 - 3 - done_wave2.get_height()) )
+                screen.blit( done_wave3, ((WIDTH - done_wave3.get_width()) // 2, HEIGHT//2 + 3 + done_wave3.get_height()) )
+            elif level == 11:
+                screen.blit( done_wave4, ((WIDTH - done_wave4.get_width()) // 2, HEIGHT//2 - 3 - done_wave4.get_height()) )
                 screen.blit( done_wave3, ((WIDTH - done_wave3.get_width()) // 2, HEIGHT//2 + 3 + done_wave3.get_height()) )
                
         if level == 11:
@@ -461,9 +469,9 @@ def runGame():
                 level += 1
                 wave_length = 2
                 enemy_speed = 0.9
+                music.musicGame(game_run = True, game_run_boss = True)
             if (level == 11):
                 boss_level += 1
-                music.musicGame(game_run = True, game_run_boss = True)
 
 
 
@@ -508,8 +516,6 @@ def runGame():
                                 enemies[current_enemy_index].color = None
                                 current_enemy_index = 0
                             break
-                        '''if event.unicode != pygame.K_ESCAPE and event.unicode != enemies[i].word[0] and event_key_correct != True:
-                            music.soundEffect(player_type_wrong = True)'''
                 else:
                     if event.unicode == enemies[current_enemy_index].word[0]:
                         music.soundEffect(player_shooting = True)
@@ -575,7 +581,8 @@ def runGame():
                         return
                 else:
                         boss_live += 1
-                        boss.word = "AC&)!^G$%+&AND*#YOU%^!_WIN!" 
+                        #boss.word = "AC&)!^G$%+&AND*#YOU%^!_WIN! 6@|*|*\|/|\|3\/\/\|/3@8"
+                        boss.word = "6@|*|*\|/|\|3\/\/\|/3@8" 
                         boss.health = len(boss.word)
 
 def menu():
@@ -728,13 +735,18 @@ def menu():
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if add_volume_button.rect.collidepoint(x, y):
                         music.musicSetting(add_volume = True)
+                        music.soundEffect(clicking = True)
                     if minus_volume_button.rect.collidepoint(x, y):
                         music.musicSetting(minus_volume = True)
+                        music.soundEffect(clicking = True)
                     if add_sound_button.rect.collidepoint(x, y):
                         music.musicSetting(add_sound = True)
+                        music.soundEffect(clicking = True)
                     if minus_sound_button.rect.collidepoint(x, y):
                         music.musicSetting(minus_sound = True)
+                        music.soundEffect(clicking = True)
                     if back_setting_button.rect.collidepoint(x, y):
+                        music.soundEffect(clicking = True)
                         menu_running = True
                         setting_running = False
                         check_settting_btn = False
@@ -778,11 +790,13 @@ def menu():
                         quit()
 
                     if setting_button.rect.collidepoint(x, y):
+                        music.soundEffect(clicking = True)
                         check_settting_btn = True
                         setting_running = True
                         menu_running = False
 
                     if credits_button.rect.collidepoint(x, y):
+                        music.soundEffect(clicking = True)
                         check_settting_btn = True
                         credits_running = True
                         menu_running = False
@@ -790,10 +804,12 @@ def menu():
                 # Setting
                 elif check_settting_btn == True:
                     if back_setting_button.rect.collidepoint(x, y):
+                        music.soundEffect(clicking = True)
                         menu_running = True
                         setting_running = False
                         check_settting_btn = False
                     if back_credits_button.rect.collidepoint(x, y):
+                        music.soundEffect(clicking = True)
                         menu_running = True
                         credits_running = False
                         check_settting_btn = False
