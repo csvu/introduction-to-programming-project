@@ -112,14 +112,15 @@ def isObjsCollision(obj1, obj2):
     offset_y = obj2.y - obj1.y
     return obj1.mask.overlap(obj2.mask, (offset_x, offset_y)) != None
 
-def explosion(screen, color, position):
+def explosion(screen, color, position, scroll):
     Blast = []
     for i in range(1, 31):
         Blast.append(pygame.image.load("image/guivu/" + str(i) + ".png"))
     print(len(Blast))
 
     for i in range(1, 60, 1):
-        screen.blit(background, (0,0))
+        for j in range (1, 3):
+                screen.blit(background, (0, HEIGHT - i * background.get_height() + scroll))
         HalfWidth = int(Blast[int(i/2)].get_width()/2)
         HalfHeight = Blast[int(i/2)].get_height()/2
         screen.blit(Blast[int(i/2)], (position[0] - HalfWidth, int(position[1] - HalfHeight)))
@@ -396,7 +397,7 @@ def runGame():
     player = Player(0, 0)
     player.x = WIDTH / 2 - player.getWidth() / 2
     player.y = HEIGHT - player.getHeight() - 10
-    boss = Enemy(WIDTH / 2 - boss_image.get_width() / 2, -boss_image.get_height() - 10, "IVeryLov3Me$$I&YoU")
+    boss = Enemy(WIDTH / 2 - boss_image.get_width() / 2, -boss_image.get_height() - 10, "IV3RYL@V3ME$$I&YoU")
     boss_live = 0
     boss.shuttle_image = boss_image
 
@@ -409,7 +410,7 @@ def runGame():
         for i in range (1, 3):
                 screen.blit(background, (0, HEIGHT - i * background.get_height() + scroll))
         
-        nth_wave = font_8bits.render(f"Wave: {level - 3}", 1, (255,255,255))
+        nth_wave = font_8bits.render(f"Wave: {level - 3 if level != 11 else 7}", 1, (255,255,255))
         screen.blit(nth_wave, ((WIDTH - nth_wave.get_width()) // 2, 10))
 
         done_wave1 = font_8bits.render("Go", True, (255,255,255))
@@ -494,7 +495,7 @@ def runGame():
                             continue
                         if enemies[i].word == "":
                             continue
-                        if (event.key == ord(enemies[i].word[0]) and 0 <= enemies[i].x <= WIDTH and enemies[i].y >= -enemies[i].getHeight()):
+                        if (event.unicode == enemies[i].word[0] and 0 <= enemies[i].x <= WIDTH and enemies[i].y >= -enemies[i].getHeight()):
                             music.soundEffect(player_shooting = True)
                             score += 1
                             event_key_correct = True
@@ -510,7 +511,7 @@ def runGame():
                         '''if event.unicode != pygame.K_ESCAPE and event.unicode != enemies[i].word[0] and event_key_correct != True:
                             music.soundEffect(player_type_wrong = True)'''
                 else:
-                    if event.key == ord(enemies[current_enemy_index].word[0]):
+                    if event.unicode == enemies[current_enemy_index].word[0]:
                         music.soundEffect(player_shooting = True)
                         score += 1
                         event_key_correct = True
@@ -519,9 +520,10 @@ def runGame():
                         if enemies[current_enemy_index].word == "":
                             enemies[current_enemy_index].color = None
                             current_enemy_index = 0
-                if (event.key != pygame.K_ESCAPE and event_key_correct != True and level < 11) or (event.unicode != boss.word[0] and event_key_correct != True and level == 11):
-                    music.soundEffect(player_type_wrong = True)
-                    score -= 1
+                if boss.word != "":
+                        if (event.key != pygame.K_ESCAPE and event_key_correct != True and level < 11) or (event.unicode != boss.word[0] and event_key_correct != True and level == 11):
+                                music.soundEffect(player_type_wrong = True)
+                                score -= 1
                 #Nhan vao Enter hoac Esc thi Paused Game
                 if event.key == pygame.K_ESCAPE:
                         paused() 
@@ -531,7 +533,7 @@ def runGame():
                 boss.move(player, boss_speed)
         if isObjsCollision(boss, player):
                 music.soundEffect(player_explosion = True)
-                explosion(screen, (100, 500, 500), (WIDTH / 2, player.y))
+                explosion(screen, (100, 500, 500), (WIDTH / 2, player.y), scroll)
                 #player.is_alive = False
                 lost = True
                 return
@@ -541,7 +543,7 @@ def runGame():
                 enemy.move(player, enemy_speed)
             if isObjsCollision(enemy, player):
                 music.soundEffect(player_explosion = True)
-                explosion(screen, (100, 500, 500), (WIDTH / 2, player.y))
+                explosion(screen, (100, 500, 500), (WIDTH / 2, player.y), scroll)
                 #player.is_alive = False
                 lost = True
                 return
