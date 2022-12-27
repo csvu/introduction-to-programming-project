@@ -1,4 +1,4 @@
-import pygame, math, os, time, random
+import pygame, math, os, time, random, string
 from sound import music #từ sound.py móc class music ra
 
 
@@ -315,7 +315,7 @@ def showLost():
 #====================================================================
 
 
-#==========Hien thi man hinh khi ban thang - WINWIN GAME==========
+#==========Hien thi man hinh khi ban thang - WINWIN GAME=============
 def showWin():
         show_win = True
 
@@ -374,13 +374,17 @@ def runGame():
     current_enemy_index = 0
     running = True
     FPS = 60
-    level = 3
+    level = 3 #level chỉ độ khó của địch. mới khi vào chơi level tăng lên thành 4 tức tàu địch có 4 ký tự
     boss_level = 5
     offset = 0
     global score
     score = 0
-    global duration
+    global duration #thời gian bắt đầu ván chơi
     duration = 0
+    global wave_start #thời gian bắt đầu 1 wave
+    wave_start = 0
+    global wave_key
+    wave_key = False
     main_font = pygame.font.SysFont("Calibri", 50)
 
     enemies = []
@@ -406,19 +410,19 @@ def runGame():
                 screen.blit(background, (0, HEIGHT - i * background.get_height() + scroll))
         
         nth_wave = font_8bits.render(f"Wave: {level - 3}", 1, (255,255,255))
-        screen.blit(nth_wave, ((WIDTH - nth_wave.get_width()) / 2, 10))
+        screen.blit(nth_wave, ((WIDTH - nth_wave.get_width()) // 2, 10))
+
+        done_wave2 = font_8bits_small.render(f"Your score: {score}", True, (255,255,255))
+        if time.time() < wave_start and (level > 4):
+            screen.blit( done_wave2, ((WIDTH - done_wave2.get_width()) // 2, (HEIGHT - done_wave2.get_height()) // 2) )
+               
         if level == 11:
                 boss.draw()
         for enemy in enemies:
             enemy.draw()
         player.draw()
         player.all_explosions.draw(screen)
-        '''
-        if lost:
-            pygame.mixer.music.pause()
-            lost_label = lost_font.render("You loser:)", 1, (255,255,255))
-            screen.blit(lost_label, (WIDTH / 2 - lost_label.get_width() / 2, 350))
-        '''
+        
         pygame.display.update()
         
         #def draw():
@@ -443,6 +447,8 @@ def runGame():
         if flag:
             if (level != 11):
                 level += 1
+                wave_key = True
+                wave_start = time.time() + 3
             wave_length += 1
             if (level == 10):
                 level += 1
@@ -450,11 +456,14 @@ def runGame():
                 enemy_speed = 0.9
             if (level == 11):
                 boss_level += 1
+                music.musicGame(game_run = True, game_run_boss = True)
 
 
-        
+
+            arr = random.sample(range(26), wave_length + 3)
             for i in range(wave_length):
-                lines = open(os.path.realpath(f"word_list/{level if level != 11 else boss_level}_chars/{chr(i + 97)}.txt")).read().splitlines()
+                lines = open(os.path.realpath(f"word_list/{min(level, 6)}_chars/{chr(arr[i] + 97)}.txt")).read().splitlines()
+                #lines = open(os.path.realpath(f"word_list/{level if level != 11 else boss_level}_chars/{chr(i + 97)}.txt")).read().splitlines()
                 enemy = Enemy(((-1) ** offset) * (2 * i * small_enemy.get_width() - 10) + (offset) * WIDTH, random.randrange(-200, -100), random.choice(lines))
                 enemies.append(enemy)
             offset ^= 1
@@ -465,11 +474,13 @@ def runGame():
             
             if event.type == pygame.KEYDOWN:
                 print (event)
+                event_key_correct = False
                 if (level == 11 and boss.word != "" and current_enemy_index == 0):
                         if (event.unicode == boss.word[0]):
                                 player.shoot(boss)
                                 music.soundEffect(player_shooting = True)
                                 score += 1
+                                event_key_correct = True
                                 boss.word = boss.word[1 : ]
                 if current_enemy_index == 0:
                     for i in range(len(enemies)):
@@ -480,6 +491,7 @@ def runGame():
                         if (event.key == ord(enemies[i].word[0]) and 0 <= enemies[i].x <= WIDTH and enemies[i].y >= -enemies[i].getHeight()):
                             music.soundEffect(player_shooting = True)
                             score += 1
+                            event_key_correct = True
                             current_enemy_index = -1
                             enemies[i].text_color = mustard_yellow
                             enemies.append(enemies.pop(i))
@@ -489,19 +501,21 @@ def runGame():
                                 enemies[current_enemy_index].color = None
                                 current_enemy_index = 0
                             break
-                        '''elif event.key != pygame.K_ESCAPE:
+                        '''if event.unicode != pygame.K_ESCAPE and event.unicode != enemies[i].word[0] and event_key_correct != True:
                             music.soundEffect(player_type_wrong = True)'''
                 else:
                     if event.key == ord(enemies[current_enemy_index].word[0]):
                         music.soundEffect(player_shooting = True)
                         score += 1
+                        event_key_correct = True
                         player.shoot(enemies[current_enemy_index])
                         enemies[current_enemy_index].word = enemies[current_enemy_index].word[1 : ]
                         if enemies[current_enemy_index].word == "":
                             enemies[current_enemy_index].color = None
                             current_enemy_index = 0
-                    '''elif event.key != pygame.K_ESCAPE:
-                        music.soundEffect(player_type_wrong = True)'''
+                if (event.key != pygame.K_ESCAPE and event_key_correct != True and level < 11) or (event.unicode != boss.word[0] and event_key_correct != True and level == 11):
+                    music.soundEffect(player_type_wrong = True)
+                    score -= 1
                 #if event.key == pygame.K_RETURN or event.key == pygame.K_ESCAPE: # Nhan vao Enter hoac Esc thi Paused Game
                 if event.key == pygame.K_ESCAPE:
                         paused() 
@@ -565,9 +579,6 @@ def menu():
     menu_bg = pygame.image.load('image/menu_background.jfif')
     menu_bg = pygame.transform.scale(menu_bg, (WIDTH, HEIGHT))
 
-    # main_menu = pygame.image.load('image/main_menu.png')
-    # main_menu = pygame.transform.scale(main_menu, (430, 120))
-
     menu_start_btn = pygame.image.load('image/start_menu.png').convert_alpha()
     
     menu_exit_btn = pygame.image.load('image/exit_menu.png').convert_alpha()
@@ -622,13 +633,6 @@ def menu():
 
     main_running = True
     while main_running:
-        ############################
-        #BLIT giao diện mở đầu ở đây
-        #NEW GAME
-        # QUIT
-
-        #lost screen
-        #Dành cho Tùng 
         global lost
         global to_rungame
         while lost:
@@ -661,13 +665,10 @@ def menu():
                         print('bbb')
 
 
-        #print('ddd')
-        #print(menu_running)
         if (menu_running == True):
             #print('aaa')
             screen.blit(menu_bg, (0,0))
             screen.blit(title_main_menu, (x_title, y_title))
-            # screen.blit(main_menu, (0, 10))
 
             start_button.draw(screen)
             exit_button.draw(screen)
@@ -747,9 +748,6 @@ def menu():
             screen.blit(credits_name, ((WIDTH // 2 - (credits_name.get_width()) // 2, 500)))
 
 
-        # if (paused == True):
-        #     pass
-        ############################
         pygame.display.update()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -759,10 +757,9 @@ def menu():
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if check_settting_btn == False:
-                #Chỗ này thay bằng if <ẤN VÀO NÚT NEW GAME>#
                     if start_button.rect.collidepoint(x, y):
                         menu_running = False
-                        game_running = True #đánh dấu đã thoát menu, vào game chơi
+                        game_running = True
                         music.musicGame(game_run = True)
                         global time_start
                         time_start = time.time() #thời gian bắt đầu lượt chơi mới

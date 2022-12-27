@@ -1,8 +1,3 @@
-daal
-dabs
-dace
-dada
-dado
 dads
 daff
 daft

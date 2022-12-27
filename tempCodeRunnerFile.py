@@ -1,1 +1,1 @@
-showLost()
+wave_start

@@ -38,15 +38,17 @@ class music:
         volume_sound_str = str(volume_sound)
         with open("music/sound.txt",'w',encoding = 'utf-8') as f: f.write(volume_sound_str)
 
-    def musicGame(menu_running = False, game_run = False, show_lost = False, show_win = False):
+    def musicGame(menu_running = False, game_run = False, show_lost = False, show_win = False, game_run_boss = False):
         global volume
         global background_music
         pygame.mixer.quit()
         pygame.mixer.init()
         if menu_running == True:
             background_music = pygame.mixer.Sound("music\M01.mp3")
-        if game_run == True:
+        if game_run == True and game_run_boss == False:
             background_music = pygame.mixer.Sound("music\M02.mp3")
+        if game_run == True and game_run_boss == True:
+            background_music = pygame.mixer.Sound("music\M03.mp3")
         if show_lost == True:
             background_music = pygame.mixer.Sound("music\M04.mp3")
         if show_win == True:
