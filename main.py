@@ -120,7 +120,7 @@ def explosion(screen, color, position, scroll):
 
     for i in range(1, 60, 1):
         for j in range (1, 3):
-                screen.blit(background, (0, HEIGHT - i * background.get_height() + scroll))
+                screen.blit(background, (0, HEIGHT - j * background.get_height() + scroll))
         HalfWidth = int(Blast[int(i/2)].get_width()/2)
         HalfHeight = Blast[int(i/2)].get_height()/2
         screen.blit(Blast[int(i/2)], (position[0] - HalfWidth, int(position[1] - HalfHeight)))
