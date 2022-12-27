@@ -334,7 +334,7 @@ def showWin():
         #=====DURATION=====
         global time_end
         time_end = time.time()
-        duration = round(time_end - time_start)
+        #duration = round(time_end - time_start)
         show_duration_announcement = font_8bits.render('You beat this game', False, (255,255,255))
         show_duration_announcement2 = font_8bits.render('in ' + str(duration) + ' seconds', False, (255,255,255))
         show_duration_announcement3 = font_8bits.render('Your score: ' + str(score), False, (255,255,255))
@@ -379,10 +379,10 @@ def runGame():
     offset = 0
     global score
     score = 0
-    global duration #thời gian bắt đầu ván chơi
+    global duration #thời gian của 1 ván chơi
     duration = 0
     global wave_start #thời gian bắt đầu 1 wave
-    wave_start = 0
+    wave_start = 0 #thời điểm wave mới bắt đầu
     global wave_key
     wave_key = False
     main_font = pygame.font.SysFont("Calibri", 50)
@@ -412,9 +412,15 @@ def runGame():
         nth_wave = font_8bits.render(f"Wave: {level - 3}", 1, (255,255,255))
         screen.blit(nth_wave, ((WIDTH - nth_wave.get_width()) // 2, 10))
 
-        done_wave2 = font_8bits_small.render(f"Your score: {score}", True, (255,255,255))
-        if time.time() < wave_start and (level > 4):
-            screen.blit( done_wave2, ((WIDTH - done_wave2.get_width()) // 2, (HEIGHT - done_wave2.get_height()) // 2) )
+        done_wave1 = font_8bits.render("Go", True, (255,255,255))
+        done_wave2 = font_8bits_small.render("Clear", True, (255,255,255))
+        done_wave3 = font_8bits_small.render(f"Your score: {score}", True, (255,255,255))
+        if time.time() < wave_start:
+            if level == 4:
+                screen.blit( done_wave1, ((WIDTH - done_wave1.get_width()) // 2, (HEIGHT - done_wave1.get_height()) // 2) )
+            elif level > 4:
+                screen.blit( done_wave2, ((WIDTH - done_wave2.get_width()) // 2, HEIGHT//2 - 3 - done_wave2.get_height()) )
+                screen.blit( done_wave3, ((WIDTH - done_wave3.get_width()) // 2, HEIGHT//2 + 3 + done_wave3.get_height()) )
                
         if level == 11:
                 boss.draw()
@@ -448,7 +454,7 @@ def runGame():
             if (level != 11):
                 level += 1
                 wave_key = True
-                wave_start = time.time() + 3
+                wave_start = time.time() + 2.5 #cộng thêm 2.5 để hiện chữ 2.5 giây
             wave_length += 1
             if (level == 10):
                 level += 1
@@ -516,7 +522,7 @@ def runGame():
                 if (event.key != pygame.K_ESCAPE and event_key_correct != True and level < 11) or (event.unicode != boss.word[0] and event_key_correct != True and level == 11):
                     music.soundEffect(player_type_wrong = True)
                     score -= 1
-                #if event.key == pygame.K_RETURN or event.key == pygame.K_ESCAPE: # Nhan vao Enter hoac Esc thi Paused Game
+                #Nhan vao Enter hoac Esc thi Paused Game
                 if event.key == pygame.K_ESCAPE:
                         paused() 
 
