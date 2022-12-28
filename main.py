@@ -660,7 +660,7 @@ def menu():
                         runGame()
                 else:
                         menu_running = True
-                        music.musicGame(game_run = True)
+                        music.musicGame(menu_running = True)
                         lost = False
                         print('bbb')
         #Dành cho Tùng
@@ -675,7 +675,7 @@ def menu():
                         runGame()
                 else:
                         menu_running = True
-                        music.musicGame(game_run = True)
+                        music.musicGame(menu_running = True)
                         win = False
                         print('bbb')
 

@@ -1,1 +1,1 @@
-arr = random.sample(range(26), wave_length + 3)
+vel = 
