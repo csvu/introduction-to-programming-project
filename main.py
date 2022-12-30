@@ -112,11 +112,10 @@ def isObjsCollision(obj1, obj2):
     offset_y = obj2.y - obj1.y
     return obj1.mask.overlap(obj2.mask, (offset_x, offset_y)) != None
 
-def explosion(screen, color, position, scroll):
+def explosion(screen, color, position, scroll): #tàu ta nổ hay tàu boss nổ
     Blast = []
     for i in range(1, 31):
         Blast.append(pygame.image.load("image/guivu/" + str(i) + ".png"))
-    print(len(Blast))
 
     for i in range(1, 60, 1):
         for j in range (1, 3):
@@ -191,14 +190,11 @@ class Player(Shuttle):
         for bullet in self.bullets:
             bullet.move(speed)
             if bullet.isBulletCollision(bullet.chosen_enemy):
-                #chỗ này thêm âm thanh và hiệu ứng nổ khi đạn đụng trúng enemy
                 expl = Explosion1 (((bullet.x - (bullet.image.get_width() / 2) + 35),(bullet.y - (bullet.image.get_height() / 2)+20)), 'sm')
-                #all_explosions.add(expl)
                 self.all_explosions.add(expl)
                 bullet.chosen_enemy.health -= 1
                 if (bullet.chosen_enemy.health == 0):
                     expl = Explosion1 (((bullet.x - (bullet.image.get_width() / 2) + 40),(bullet.y - (bullet.image.get_height() / 2))), 'lg')
-                    #all_explosions.add(expl)
                     self.all_explosions.add(expl)
                     music.soundEffect(enemy_explosion = True)
 
@@ -307,12 +303,10 @@ def showLost():
                                 if back_to_menu_button.rect.collidepoint(x, y):
                                         music.soundEffect(clicking = True)
                                         show_lost = False
-                                        print('x')
                                 elif replay_button.rect.collidepoint(x, y):
                                         #Dành cho Tùng
                                         global to_rungame
                                         to_rungame = True
-                                        print('y')
                                         show_lost = False
 
 #====================================================================
@@ -335,9 +329,6 @@ def showWin():
         back_to_menu_button = Button(60, (HEIGHT // 1 - (back_to_menu_img.get_height()) // 1 ), back_to_menu_img, 0.4)
 
         #=====DURATION=====
-        global time_end
-        time_end = time.time()
-        #duration = round(time_end - time_start)
         show_duration_announcement = font_8bits.render('You beat this game', False, (255,255,255))
         show_duration_announcement2 = font_8bits.render('in ' + str(duration) + ' seconds', False, (255,255,255))
         show_duration_announcement3 = font_8bits.render('Your score: ' + str(score), False, (255,255,255))
@@ -363,12 +354,10 @@ def showWin():
                                 if back_to_menu_button.rect.collidepoint(x, y):
                                         music.soundEffect(clicking = True)
                                         show_win = False
-                                        print('x')
                                 elif replay_button.rect.collidepoint(x, y):
                                         #Dành cho Tùng
                                         global to_rungame
                                         to_rungame = True
-                                        print('y')
                                         show_win = False
 
 #====================================================================
@@ -386,7 +375,7 @@ def runGame():
     global duration #thời gian của 1 ván chơi
     duration = 0
     global wave_start #thời gian bắt đầu 1 wave
-    wave_start = 0 #thời điểm wave mới bắt đầu
+    wave_start = 0
     global wave_key
     wave_key = False
     main_font = pygame.font.SysFont("Calibri", 50)
@@ -417,11 +406,11 @@ def runGame():
         nth_wave = font_8bits.render(f"Wave: {level - 3 if level != 11 else 7}", 1, (255,255,255))
         screen.blit(nth_wave, ((WIDTH - nth_wave.get_width()) // 2, 10))
 
-        done_wave1 = font_8bits.render("Go", True, (255,255,255))
-        done_wave2 = font_8bits_small.render("Clear", True, (255,255,255))
+        done_wave1 = font_8bits.render("Go", True, (255,255,255)) #hiện dòng này khi mới vào chơi
+        done_wave2 = font_8bits_small.render("Clear", True, (255,255,255)) # hiện các dòng chữ sau nếu xong 1 wave
         done_wave3 = font_8bits_small.render(f"Your score: {score}", True, (255,255,255))
-        done_wave4 = font_8bits_small.render("Warning!", True, (255, 0, 0))
-        if time.time() < wave_start:
+        done_wave4 = font_8bits_small.render("Warning!", True, (255, 0, 0)) # hiện waring! khi có boss
+        if time.time() < wave_start: #hiện chữ trong 2.5 giây
             if level == 4:
                 screen.blit( done_wave1, ((WIDTH - done_wave1.get_width()) // 2, (HEIGHT - done_wave1.get_height()) // 2) )
             elif level > 4 and level != 11:
@@ -440,8 +429,6 @@ def runGame():
         
         pygame.display.update()
         
-        #def draw():
-        #    screen.blit(self.image,(self.x, self.y)) 
       
     while running:
         clock.tick(FPS)
@@ -475,7 +462,7 @@ def runGame():
 
 
 
-            arr = random.sample(range(26), wave_length)
+            arr = random.sample(range(26), wave_length) #tạo mảng lưu ký tự khác nhau để các tàu không bị trùng ký tự đầu
             for i in range(wave_length):
                 lines = open(os.path.realpath(f"word_list/{min(level, 6)}_chars/{chr(arr[i] + 97)}.txt")).read().splitlines()
                 #lines = open(os.path.realpath(f"word_list/{level if level != 11 else boss_level}_chars/{chr(i + 97)}.txt")).read().splitlines()
@@ -488,7 +475,6 @@ def runGame():
                 quit()
             
             if event.type == pygame.KEYDOWN:
-                print (event)
                 event_key_correct = False
                 if (level == 11 and boss.word != "" and current_enemy_index == 0):
                         if (event.unicode == boss.word[0]):
@@ -530,7 +516,7 @@ def runGame():
                         if (event.key != pygame.K_ESCAPE and event_key_correct != True and level < 11) or (event.unicode != boss.word[0] and event_key_correct != True and level == 11):
                                 music.soundEffect(player_type_wrong = True)
                                 score -= 1
-                #Nhan vao Enter hoac Esc thi Paused Game
+                #Nhan vao Esc thi Paused Game
                 if event.key == pygame.K_ESCAPE:
                         paused() 
 
@@ -540,7 +526,6 @@ def runGame():
         if isObjsCollision(boss, player):
                 music.soundEffect(player_explosion = True)
                 explosion(screen, (100, 500, 500), (WIDTH / 2, player.y), scroll)
-                #player.is_alive = False
                 lost = True
                 return
 
@@ -550,23 +535,14 @@ def runGame():
             if isObjsCollision(enemy, player):
                 music.soundEffect(player_explosion = True)
                 explosion(screen, (100, 500, 500), (WIDTH / 2, player.y), scroll)
-                #player.is_alive = False
                 lost = True
                 return
             elif enemy.health == 0:
                 if enemy.shuttle_image != hidden_thing:
                     enemy.shuttle_image = hidden_thing
-                #chỗ này thêm âm thanh và hiệu ứng nổ khi đạn đụng trúng enemy
                 
                
                
-
-        '''def image_draw(self, url, xLocal, yLocal, xImg, yImg):  # In ra người hình ảnh
-         PlanesImg = pygame.image.load(url)
-         PlanesImg = pygame.transform.scale(
-            PlanesImg, (xImg, yImg))   change size image
-        self.screen.blit(PlanesImg, (xLocal, yLocal))'''
-
         player.moveBullets(energy_circle_speed)
         
         player.all_explosions.update()
@@ -576,8 +552,7 @@ def runGame():
                         explosion(screen, (100, 500, 500), (WIDTH / 2, boss.y + 20), scroll)
                         global win
                         win = True
-                        duration = (pygame.time.get_ticks() - start) // 1000
-                        print(duration)
+                        duration = (pygame.time.get_ticks() - start) // 1000 #thời gian đã chơi nếu thắng (tính cả thời gian tạm dừng game)
                         return
                 else:
                         boss_live += 1
@@ -600,11 +575,6 @@ def menu():
 
     start_button = Button(25, 300, menu_start_btn, 0.8)
     exit_button = Button(100, 430, menu_exit_btn, 0.6)
-
-    '''gura_img = pygame.image.load('image/gura_menu.png')
-    gura_img = Button(240, 225, gura_img, 0.2)
-    gura2_img = pygame.image.load('image/gura2_menu.png')
-    gura2_img = Button(65, 450, gura2_img, 0.1)'''
 
     title_main_menu = font_8bits_title_main_menu.render("AliType", False, (255, 192, 0))
     title_width = title_main_menu.get_width()
@@ -651,7 +621,6 @@ def menu():
         global lost
         global to_rungame
         while lost:
-                print('ccc')
                 showLost()
                 if to_rungame:
                         to_rungame = False
@@ -662,8 +631,6 @@ def menu():
                         menu_running = True
                         music.musicGame(menu_running = True)
                         lost = False
-                        print('bbb')
-        #Dành cho Tùng
 
         global win
         while win:
@@ -677,11 +644,9 @@ def menu():
                         menu_running = True
                         music.musicGame(menu_running = True)
                         win = False
-                        print('bbb')
 
 
         if (menu_running == True):
-            #print('aaa')
             screen.blit(menu_bg, (0,0))
             screen.blit(title_main_menu, (x_title, y_title))
 
@@ -689,9 +654,6 @@ def menu():
             exit_button.draw(screen)
             setting_button.draw(screen)
             credits_button.draw(screen)
-
-            '''gura_img.draw(screen)
-            gura2_img.draw(screen)'''
 
         if (setting_running == True):
             surface_setting.fill(color_setting)
@@ -781,8 +743,6 @@ def menu():
                         menu_running = False
                         game_running = True
                         music.musicGame(game_run = True)
-                        global time_start
-                        time_start = time.time() #thời gian bắt đầu lượt chơi mới
                         runGame()
 
                     #thêm dòng if ấn vào nút QUIT thì pygame.quit()

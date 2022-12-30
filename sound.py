@@ -1,5 +1,7 @@
 import pygame
 
+
+#=================Lưu các chỉ số điều chỉnh âm thanh===================
 with open("music/music.txt",'r',encoding = 'utf-8') as v_str:
     volume_str = v_str.read()
 volume = float(volume_str)
@@ -47,7 +49,7 @@ class music:
             background_music = pygame.mixer.Sound("music\M01.mp3")
         if game_run == True and game_run_boss == False:
             background_music = pygame.mixer.Sound("music\M02.mp3")
-        if game_run == True and game_run_boss == True:
+        if game_run_boss == True:
             background_music = pygame.mixer.Sound("music\M03.mp3")
         if show_lost == True:
             background_music = pygame.mixer.Sound("music\M04.mp3")
