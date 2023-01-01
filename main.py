@@ -1,4 +1,4 @@
-import pygame, math, os, time, random, string
+import pygame, math, os, time, random, string, sys
 from sound import music #từ sound.py móc class music ra
 
 
@@ -258,7 +258,8 @@ def paused():
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                quit()
+                #quit()
+                sys.exit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     paused_game = False
@@ -298,7 +299,8 @@ def showLost():
 
                 for event in pygame.event.get():
                         if event.type == pygame.QUIT:
-                                quit()
+                                #quit()
+                                sys.exit()
                         if event.type == pygame.MOUSEBUTTONDOWN:
                                 if back_to_menu_button.rect.collidepoint(x, y):
                                         music.soundEffect(clicking = True)
@@ -348,7 +350,8 @@ def showWin():
 
                 for event in pygame.event.get():
                         if event.type == pygame.QUIT:
-                                quit()
+                                #quit()
+                                sys.exit()
                         
                         if event.type == pygame.MOUSEBUTTONDOWN:
                                 if back_to_menu_button.rect.collidepoint(x, y):
@@ -472,7 +475,8 @@ def runGame():
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                quit()
+                #quit()
+                sys.exit()
             
             if event.type == pygame.KEYDOWN:
                 event_key_correct = False
@@ -693,7 +697,8 @@ def menu():
             x, y = pygame.mouse.get_pos()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    quit()
+                    #quit()
+                    sys.exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if add_volume_button.rect.collidepoint(x, y):
                         music.musicSetting(add_volume = True)
@@ -733,7 +738,8 @@ def menu():
         pygame.display.update()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                quit()
+                #quit()
+                sys.exit()
 
             x, y = pygame.mouse.get_pos()
 
@@ -747,7 +753,8 @@ def menu():
 
                     #thêm dòng if ấn vào nút QUIT thì pygame.quit()
                     if exit_button.rect.collidepoint(x, y):
-                        quit()
+                        #quit()
+                        sys.exit()
 
                     if setting_button.rect.collidepoint(x, y):
                         music.soundEffect(clicking = True)
